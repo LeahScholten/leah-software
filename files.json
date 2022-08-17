@@ -1,0 +1,33 @@
+{
+    "/robots.txt":"src/robots.txt",
+
+    "/":"src/html/index.html",
+    "/zakelijk.html":"src/html/zakelijk.html",
+    "/technisch.html":"src/html/technisch.html",
+    "/algemeen.html":"src/html/algemeen.html",
+    "/b2i3r0t7h2d0a0y0":"src/html/birthday.html",
+
+    "/standard.css":"src/css/standard.css",
+
+    "/projectsLoader.js":"src/js/projectsLoader.js",
+
+    "/favicon.ico":"src/img/favicon.ico",
+
+    "/cv.pdf":"src/pdf/cv.pdf",
+
+    "/raspberryPico/7segmentCounter.mp4":"src/video/raspberryPico/7SegmentCounter.mp4",
+    "/raspberryPico/binaryAnalogLeds.mp4":"src/video/raspberryPico/binaryAnalogLeds.mp4",
+    "/raspberryPico/binaryLedCounter.mp4":"src/video/raspberryPico/binaryLedCounter.mp4",
+
+    "/ZUMO32U4/objectTracing.mp4":"src/video/ZUMO32U4/objectTracing.mp4",
+    "/ZUMO32U4/rotatingInPlace.mp4":"src/video/ZUMO32U4/rotatingInPlace.mp4",
+
+    "/ATmega328P/hapticWire.mp4":"src/video/ATmega328P/hapticWire.mp4",
+    "/ATmega328P/lightDensityMeter.mp4":"src/video/ATmega328P/lightDensityMeter.mp4",
+    "/ATmega328P/quadWalkingLightShow.mp4":"src/video/ATmega328P/quadWalkingLightShow.mp4",
+    "/ATmega328P/rgbTraficLight.mp4":"src/video/ATmega328P/rgbTraficLight.mp4",
+    "/ATmega328P/walkingLight.mp4":"src/video/ATmega328P/walkingLight.mp4",
+
+    "/Arduino/automaticLight.mp4":"src/video/Arduino/automaticLight.mp4",
+    "/Arduino/rgbLightShow.mp4":"src/video/Arduino/rgbLightShow.mp4"
+}
