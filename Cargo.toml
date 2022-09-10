@@ -12,6 +12,6 @@ panic = "abort"   # abort instead of unwinding the code on panic
 
 [dependencies]
 hyper = {version = "0", features = ["http1", "http2", "server", "tcp"]}
-tokio = {version = "1", features = ["macros", "rt-multi-thread", "signal"]}
+tokio = {version = "1", features = ["fs", "macros", "rt-multi-thread", "signal"]}
 futures = "0"
 json = "0"
