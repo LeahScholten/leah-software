@@ -55,7 +55,7 @@ async fn shutdown_signal(){
 #[tokio::main]
 async fn main() {
     // we will bind to 192.168.178.12:8000, this will be the address it listens to
-    let address = SocketAddr::from(([192, 168, 178, 12], 8000));
+    let address = SocketAddr::from(([0, 0, 0, 0], 8000));
     
     // A service is needed for every connection,
     // so this creates one from our `hello_world` function
