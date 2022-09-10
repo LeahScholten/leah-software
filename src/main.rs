@@ -3,7 +3,29 @@ use std::net::SocketAddr;
 use std::time::SystemTime;
 use hyper::{Body, Request, Response, Server, StatusCode};
 use hyper::service::{make_service_fn, service_fn};
-use std::fs;
+
+async fn get_response(filepath: Option<&str>, response: &mut Response<Body>, uri: &str){
+    match filepath{
+        Some(filepath) => {
+            match tokio::fs::read(filepath).await{
+                Err(e) =>{
+                    *response.body_mut() = Body::from(format!("Failed to read file with error: {}", e));
+                    *response.status_mut() = StatusCode::NOT_FOUND;
+                    println!("File \"{}\" not found!", filepath);
+                },
+                Ok(result) => {
+                    *response.body_mut() = Body::from(result);
+                    println!("File \"{}\" found", filepath);
+                }
+            };
+        },
+        None =>{
+            *response.body_mut() = Body::from("Invalid request!");
+            *response.status_mut() = StatusCode::BAD_REQUEST;
+            println!("Invalid uri: \"{}\"", uri);
+        }
+    }
+}
 
 async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error>{
     let start = SystemTime::now();
@@ -13,31 +35,13 @@ async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error>{
 
     // start with a minimal response
     let mut response = Response::new(Body::empty());
-    let files = fs::read_to_string("files.json").expect("Failed to read files.json");
+    let files = tokio::fs::read_to_string("files.json").await.expect("Failed to read files.json");
     let files = json::parse(&files).expect("Failed to parse files.json");
 
     let filepath = files[uri_path].as_str();
 
-    match filepath{
-        Some(filepath) => {
-            match fs::read(filepath){
-                Err(e) =>{
-                    *response.body_mut() = Body::from(format!("Failed to read file with error: {}", e));
-                    *response.status_mut() = StatusCode::NOT_FOUND;
-                    println!("File not found!");
-                },
-                Ok(result) => {
-                    *response.body_mut() = Body::from(result);
-                    println!("File found");
-                }
-            };
-        },
-        None =>{
-            *response.body_mut() = Body::from("Invalid request!");
-            *response.status_mut() = StatusCode::BAD_REQUEST;
-            println!("Invalid url!");
-        }
-    }
+    get_response(filepath, &mut response, uri_path).await;
+    
     match start.elapsed(){
         Ok(elapsed) => println!("Finished request in {} seconds!\n", elapsed.as_secs_f64()),
         Err(e) => eprintln!("Failed to measure performance: {}\n", e)
@@ -55,7 +59,7 @@ async fn shutdown_signal(){
 #[tokio::main]
 async fn main() {
     // we will bind to 192.168.178.12:8000, this will be the address it listens to
-    let address = SocketAddr::from(([192, 168, 178, 12], 8000));
+    let address = SocketAddr::from(([0, 0, 0, 0], 8000));
     
     // A service is needed for every connection,
     // so this creates one from our `hello_world` function

@@ -5,11 +5,11 @@
     "/zakelijk.html":"src/html/zakelijk.html",
     "/technisch.html":"src/html/technisch.html",
     "/algemeen.html":"src/html/algemeen.html",
-    "/b2i3r0t7h2d0a0y0":"src/html/birthday.html",
+    "/christmas.html":"src/html/christmas.html",
 
     "/standard.css":"src/css/standard.css",
 
-    "/projectsLoader.js":"src/js/projectsLoader.js",
+    "/countdown.js":"src/js/countdown.js",
 
     "/favicon.ico":"src/img/favicon.ico",
 
