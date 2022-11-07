@@ -2,7 +2,7 @@ use the following command to make sure, the server will keep running after closi
 tmux
 
 After that, run the following command to run the server:
-cargo run
+cargo watch -x run
 
 shutdown when the server has had an update:
 tmux attach-session -t 0
