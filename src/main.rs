@@ -1,65 +1,101 @@
 #![warn(clippy::pedantic, clippy::nursery)]
-use warp::{Filter, fs};
+#![feature(async_closure)]
+
+use std::net::SocketAddr;
+
+use axum::{Router, routing::get};
+use tokio::fs::read_to_string;
+
+fn add_html_pages(mut app: Router) -> Router{
+    let routes = vec!["/", "/zakelijk.html", "/technisch.html", "/algemeen.html", "/christmas.html"];
+    for route in routes{
+        app = app.route(route,  get(async || read_to_string("src/html".to_owned() + route).await.unwrap()));
+    }
+    app
+}
+
+fn add_javascript(mut app: Router) -> Router{
+    let routes = vec!["countdown.js"];
+    for route in routes{
+        app = app.route(route,  get(async || read_to_string("src/js".to_owned() + route).await.unwrap()));
+    }
+    app
+}
+
+fn add_css(mut app: Router) -> Router{
+    let routes = vec!["/standard.css"];
+    for route in routes{
+        app = app.route(route,  get(async || read_to_string("src/css".to_owned() + route).await.unwrap()));
+    }
+    app
+}
+
+fn add_images(mut app: Router) -> Router{
+    let routes = vec!["/favicon.ico"];
+    for route in routes{
+        app = app.route(route,  get(async || read_to_string("src/img".to_owned() + route).await.unwrap()));
+    }
+    app
+}
+
+fn add_videos(mut app: Router) -> Router{
+    let routes = vec![
+        "/raspberryPico/7segmentCounter.mp4",
+        "/raspberryPico/binaryAnalogLeds.mp4",
+        "/raspberryPico/binaryLedCounter.mp4",
+
+        "/ZUMO32U4/objectTracing.mp4",
+        "/ZUMO32U4/rotatingInPlace.mp4",
+
+        "/ATmega328P/hapticWire.mp4",
+        "/ATmega328P/lightDensityMeter.mp4",
+        "/ATmega328P/quadWalkingLightShow.mp4",
+        "/ATmega328P/rgbTraficLight.mp4",
+        "/ATmega328P/walkingLight.mp4",
+
+        "/Arduino/automaticLight.mp4",
+        "/Arduino/rgbLightShow.mp4"
+    ];
+    for route in routes{
+        app = app.route(route,  get(async || read_to_string("src/video".to_owned() + route).await.unwrap()));
+    }
+    app
+}
+
+fn add_pdf(mut app: Router) -> Router{
+    let routes = vec!["/cv.pdf"];
+    for route in routes{
+        app = app.route(route,  get(async || read_to_string("src/pdf".to_owned() + route).await.unwrap()));
+    }
+    app
+}
+
+/*
+    "/robots.txt":"src/robots.txt",
+
+    "/cv.pdf":"src/pdf/cv.pdf",
+*/
+fn add_others(mut app: Router) -> Router{
+    let routes = vec!["/robots.txt"];
+    for route in routes{
+        app = app.route(route,  get(async || read_to_string("src".to_owned() + route).await.unwrap()));
+    }
+    app
+}
 
 #[tokio::main]
 async fn main() {
-    // html filepaths
-    let routes =  warp::path::end()
-        .and(fs::file("src/html/index.html"));
-    let routes = routes.or(warp::path("algemeen.html")
-        .and(fs::file("src/html/algemeen.html")));
-    let routes = routes.or(warp::path("technisch.html")
-        .and(fs::file("src/html/technisch.html")));
-    let routes = routes.or(warp::path("zakelijk.html")
-        .and(fs::file("src/html/zakelijk.html")));
-    
-    // css filepath
-    let routes = routes.or(warp::path("standard.css")
-        .and(fs::file("src/css/standard.css")));
-    
-    // script filepath
-    let routes = routes.or(warp::path("countdown.js")
-        .and(fs::file("src/js/countdown.js")));
+    // build the application
+    let mut app = Router::new();
+    app = add_html_pages(app);
+    app = add_javascript(app);
+    app = add_css(app);
+    app = add_images(app);
+    app = add_videos(app);
+    app = add_pdf(app);
+    app = add_others(app);
 
-    // pdf filepath
-    let routes = routes.or(warp::path("cv.pdf")
-        .and(fs::file("src/pdf/cv.pdf")));
-    
-    // image filepaths
-    let routes = routes.or(warp::path("favicon.ico")
-        .and(fs::file("src/img/favicon.ico")));
-    
-    // video filepaths
-    let routes = routes.or(warp::path!("raspberryPico" / "7segmentCounter.mp4")
-        .and(fs::file("src/video/raspberryPico/7SegmentCounter.mp4")));
-    let routes = routes.or(warp::path!("raspberryPico" / "binaryAnalogLeds.mp4")
-        .and(fs::file("src/video/raspberryPico/binaryAnalogLeds.mp4")));
-    let routes = routes.or(warp::path!("raspberryPico" / "binaryLedCounter.mp4")
-        .and(fs::file("src/video/raspberryPico/binaryLedCounter.mp4")));
-    
-    let routes = routes.or(warp::path!("ZUMO32U4" / "objectTracing.mp4")
-        .and(fs::file("src/video/ZUMO32U4/objectTracing.mp4")));
-    let routes = routes.or(warp::path!("ZUMO32U4" / "rotatingInPlace.mp4")
-        .and(fs::file("src/video/ZUMO32U4/rotatingInPlace.mp4")));
-    
-    let routes = routes.or(warp::path!("ATmega328P" / "hapticWire.mp4")
-        .and(fs::file("src/video/ATmega328P/hapticWire.mp4")));
-    let routes = routes.or(warp::path!("ATmega328P" / "lightDensityMeter.mp4")
-        .and(fs::file("src/video/ATmega328P/lightDensityMeter.mp4")));
-    let routes = routes.or(warp::path!("ATmega328P" / "quadWalkingLightShow.mp4")
-        .and(fs::file("src/video/ATmega328P/quadWalkingLightShow.mp4")));
-    let routes = routes.or(warp::path!("ATmega328P" / "rgbTraficLight.mp4")
-        .and(fs::file("src/video/ATmega328P/rgbTraficLight.mp4")));
-    let routes = routes.or(warp::path!("ATmega328P" / "walkingLight.mp4")
-        .and(fs::file("src/video/ATmega328P/walkingLight.mp4")));
-
-    let routes = routes.or(warp::path!("Arduino" / "automaticLight.mp4")
-        .and(fs::file("src/video/Arduino/automaticLight.mp4")));
-    let routes = routes.or(warp::path!("raspberryPico" / "7segmentCounter.mp4")
-        .and(fs::file("src/video/Arduino/rgbLightShow.mp4")));
-
-    let routes = warp::get().and(routes);
-
-    println!("Listening on port: 8000");
-    warp::serve(routes).run(([0, 0, 0, 0], 8000)).await;
+    let address = SocketAddr::from(([127, 0, 0, 1], 8000));
+    axum::Server::bind(&address)
+        .serve(app.into_make_service()).await.unwrap();
 }
