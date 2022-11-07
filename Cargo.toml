@@ -11,5 +11,5 @@ codegen-units = 1 # maximize size reduction optimizations
 panic = "abort"   # abort instead of unwinding the code on panic
 
 [dependencies]
-tokio = {version = "1", features = ["fs", "macros", "rt-multi-thread", "signal"]}
-warp = "0.3"
+axum = "0.5"
+tokio = {version = "1.21.2", features = ["fs", "macros", "rt-multi-thread"]}
