@@ -28,6 +28,12 @@ fn image(content: Vec<u8>) -> impl IntoResponse{
     (headers, content)
 }
 
+fn pdf(content: Vec<u8>) -> impl IntoResponse{
+    let mut headers = HeaderMap::new();
+    headers.insert(header::CONTENT_TYPE, "application/pdf".parse().unwrap());
+    (headers, content)
+}
+
 fn add_html_pages(mut app: Router) -> Router{
     let routes = vec!["/", "/zakelijk.html", "/technisch.html", "/algemeen.html", "/christmas.html"];
     for route in routes{
@@ -91,7 +97,7 @@ fn add_videos(mut app: Router) -> Router{
 fn add_pdf(mut app: Router) -> Router{
     let routes = vec!["/cv.pdf"];
     for route in routes{
-        app = app.route(route,  get(async || Html(read_file("src/pdf".to_owned() + route).await)));
+        app = app.route(route,  get(async || pdf(read_file("src/pdf".to_owned() + route).await)));
     }
     app
 }
