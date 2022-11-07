@@ -3,16 +3,16 @@
 
 use std::net::SocketAddr;
 
-use axum::{Router, routing::get};
+use axum::{Router, routing::get, response::Html};
 use tokio::fs::read_to_string;
 
 fn add_html_pages(mut app: Router) -> Router{
     let routes = vec!["/", "/zakelijk.html", "/technisch.html", "/algemeen.html", "/christmas.html"];
     for route in routes{
         if route == "/"{
-            app = app.route(route,  get(async || read_to_string("src/html/index.html").await.unwrap_or_else(|error| error.to_string())));
+            app = app.route(route,  get(async || Html(read_to_string("src/html/index.html").await.unwrap_or_else(|error| error.to_string()))));
         }else{
-            app = app.route(route,  get(async || read_to_string("src/html".to_owned() + route).await.unwrap_or_else(|error| error.to_string())));
+            app = app.route(route,  get(async || Html(read_to_string("src/html".to_owned() + route).await.unwrap_or_else(|error| error.to_string()))));
         }
     }
     app
