@@ -9,15 +9,19 @@ use tokio::fs::read_to_string;
 fn add_html_pages(mut app: Router) -> Router{
     let routes = vec!["/", "/zakelijk.html", "/technisch.html", "/algemeen.html", "/christmas.html"];
     for route in routes{
-        app = app.route(route,  get(async || read_to_string("src/html".to_owned() + route).await.unwrap()));
+        if route == "/"{
+            app = app.route(route,  get(async || read_to_string("src/html/index.html").await.unwrap_or_else(|error| error.to_string())));
+        }else{
+            app = app.route(route,  get(async || read_to_string("src/html".to_owned() + route).await.unwrap_or_else(|error| error.to_string())));
+        }
     }
     app
 }
 
 fn add_javascript(mut app: Router) -> Router{
-    let routes = vec!["countdown.js"];
+    let routes = vec!["/countdown.js"];
     for route in routes{
-        app = app.route(route,  get(async || read_to_string("src/js".to_owned() + route).await.unwrap()));
+        app = app.route(route,  get(async || read_to_string("src/js".to_owned() + route).await.unwrap_or_else(|error| error.to_string())));
     }
     app
 }
@@ -25,7 +29,7 @@ fn add_javascript(mut app: Router) -> Router{
 fn add_css(mut app: Router) -> Router{
     let routes = vec!["/standard.css"];
     for route in routes{
-        app = app.route(route,  get(async || read_to_string("src/css".to_owned() + route).await.unwrap()));
+        app = app.route(route,  get(async || read_to_string("src/css".to_owned() + route).await.unwrap_or_else(|error| error.to_string())));
     }
     app
 }
@@ -33,7 +37,7 @@ fn add_css(mut app: Router) -> Router{
 fn add_images(mut app: Router) -> Router{
     let routes = vec!["/favicon.ico"];
     for route in routes{
-        app = app.route(route,  get(async || read_to_string("src/img".to_owned() + route).await.unwrap()));
+        app = app.route(route,  get(async || read_to_string("src/img".to_owned() + route).await.unwrap_or_else(|error| error.to_string())));
     }
     app
 }
@@ -57,7 +61,7 @@ fn add_videos(mut app: Router) -> Router{
         "/Arduino/rgbLightShow.mp4"
     ];
     for route in routes{
-        app = app.route(route,  get(async || read_to_string("src/video".to_owned() + route).await.unwrap()));
+        app = app.route(route,  get(async || read_to_string("src/video".to_owned() + route).await.unwrap_or_else(|error| error.to_string())));
     }
     app
 }
@@ -65,7 +69,7 @@ fn add_videos(mut app: Router) -> Router{
 fn add_pdf(mut app: Router) -> Router{
     let routes = vec!["/cv.pdf"];
     for route in routes{
-        app = app.route(route,  get(async || read_to_string("src/pdf".to_owned() + route).await.unwrap()));
+        app = app.route(route,  get(async || read_to_string("src/pdf".to_owned() + route).await.unwrap_or_else(|error| error.to_string())));
     }
     app
 }
@@ -78,7 +82,7 @@ fn add_pdf(mut app: Router) -> Router{
 fn add_others(mut app: Router) -> Router{
     let routes = vec!["/robots.txt"];
     for route in routes{
-        app = app.route(route,  get(async || read_to_string("src".to_owned() + route).await.unwrap()));
+        app = app.route(route,  get(async || read_to_string("src".to_owned() + route).await.unwrap_or_else(|error| error.to_string())));
     }
     app
 }
@@ -95,7 +99,7 @@ async fn main() {
     app = add_pdf(app);
     app = add_others(app);
 
-    let address = SocketAddr::from(([127, 0, 0, 1], 8000));
+    let address = SocketAddr::from(([0, 0, 0, 0], 8000));
     axum::Server::bind(&address)
         .serve(app.into_make_service()).await.unwrap();
 }
