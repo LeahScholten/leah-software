@@ -158,7 +158,7 @@ async fn main() {
     app = add_pdf(app);
     app = add_others(app);
 
-    let address = SocketAddr::from(([0, 0, 0, 0], 8000));
+    let address = SocketAddr::from(([0, 0, 0, 0], 80));
     axum::Server::bind(&address)
         .serve(app.into_make_service()).await.unwrap();
 }
