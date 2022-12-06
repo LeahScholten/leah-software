@@ -21,6 +21,9 @@ fn christmas() -> String{
     let mut page = r##"<!DOCTYPE html>
 <html lang="nl">
     <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Een gelukkig nieuwjaar kaart.">
         <title>Merry Christmas and a happy new year</title>
         <link rel="stylesheet" href="/standard.css">
     </head>
