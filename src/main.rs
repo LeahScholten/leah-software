@@ -19,7 +19,7 @@ fn christmas() -> String{
     let second_christmas_day = chrono::Local.with_ymd_and_hms(2022, 12, 26, 0, 0, 0).unwrap();
     let next_year = chrono::Local.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
     let mut page = r##"<!DOCTYPE html>
-<html>
+<html lang="nl">
     <head>
         <title>Merry Christmas and a happy new year</title>
         <link rel="stylesheet" href="/standard.css">
