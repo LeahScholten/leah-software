@@ -4,7 +4,6 @@
 #![feature(async_closure)]
 
 use axum::{routing::get, Router, response::{IntoResponse, Html}};
-use chrono::TimeZone;
 use futures_util::future::poll_fn;
 use hyper::{server::{conn::{Http, AddrIncoming}, accept::Accept}, HeaderMap, header};
 use rustls_pemfile::{certs, pkcs8_private_keys};
@@ -28,52 +27,6 @@ async fn read_file(filename: String) -> Vec<u8>{
     read(filename).await.unwrap_or_else(|error| error.to_string().bytes().collect())
 }
 
-fn christmas() -> String{
-    let now = chrono::Local::now();
-    let first_christmas_day = chrono::Local.with_ymd_and_hms(2022, 12, 25, 0, 0, 0).unwrap();
-    let second_christmas_day = chrono::Local.with_ymd_and_hms(2022, 12, 26, 0, 0, 0).unwrap();
-    let next_year = chrono::Local.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
-    let mut page = r##"<!DOCTYPE html>
-<html lang="nl">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Een gelukkig nieuwjaar kaart.">
-        <title>Merry Christmas and a happy new year</title>
-        <link rel="stylesheet" href="/standard.css">
-    </head>
-    <body>
-        <div id="content">
-            <h1>Merry Christmas and a happy new year!</h1>
-            <p>Als je dit leest, wil ik zeggen dat je een plek in mijn hart hebt.<br/>
-                Dit is omdat je een goede vriend of naast familielid bent.<br/>
-                Daarom wens ik je een fijne kerst en een gelukkig en gezond nieuw jaar.<br/>
-            <strong>"##.to_owned();
-
-    if now < first_christmas_day{
-        page += &format!("Dagen tot eerste kerstdag: {}<br/>", (first_christmas_day - now).num_days() + 1);
-    }
-    if now < second_christmas_day{
-        page += &format!("Dagen tot tweede kerstdag: {}<br/>", (second_christmas_day - now).num_days() + 1);
-    }
-    if (next_year - now).num_days() > 0{
-        page += &format!("Dagen tot 2023: {}<br/>", (next_year - now).num_days() + 1);
-    }else if now < next_year{
-        let time_till_next_year = next_year - now;
-        page += &format!("{}:{}:{} tot 2023<br/>", time_till_next_year.num_hours(), time_till_next_year.num_minutes(), time_till_next_year.num_seconds());
-    }else{
-        page += &format!("Gelukkig 2023!<br/>");
-    }
-    page += r"</strong>
-            <p>groetjes,</p>
-            <p>Michael Scholten en Joy</p>
-        </div>
-    </body>
-</html>";
-
-    page
-}
-
 fn css(content: Vec<u8>) -> impl IntoResponse{
     let mut headers = HeaderMap::new();
     headers.insert(header::CONTENT_TYPE, "text/css".parse().unwrap());
@@ -92,13 +45,23 @@ fn pdf(content: Vec<u8>) -> impl IntoResponse{
     (headers, content)
 }
 
+fn js(content: Vec<u8>) -> impl IntoResponse{
+    let mut headers = HeaderMap::new();
+    headers.insert(header::CONTENT_TYPE, "application/javascript".parse().unwrap());
+    (headers, content)
+}
+
+fn wasm(content: Vec<u8>) -> impl IntoResponse{
+    let mut headers = HeaderMap::new();
+    headers.insert(header::CONTENT_TYPE, "application/wasm".parse().unwrap());
+    (headers, content)
+}
+
 fn add_html_pages(mut app: Router) -> Router{
     let routes = vec!["/", "/zakelijk.html", "/technisch.html", "/algemeen.html", "/kerst.html"];
     for route in routes{
         if route == "/"{
             app = app.route(route,  get(async || Html(read_file("src/html/index.html".to_owned()).await)));
-        }else if route == "/kerst.html"{
-            app = app.route(route,  get(async || Html(christmas())));
         }else{
             app = app.route(route,  get(async || Html(read_file("src/html".to_owned() + route).await)));
         }
@@ -151,6 +114,18 @@ fn add_pdf(mut app: Router) -> Router{
     for route in routes{
         app = app.route(route,  get(async || pdf(read_file("src/pdf".to_owned() + route).await)));
     }
+    app
+}
+
+fn add_js(mut app: Router) -> Router{
+    let routes = vec!["/kerst-2877dfc1b21cf884.js"];
+    app = app.route(routes[0],  get(async || js(read_file("src/js/kerst.js".to_owned()).await)));
+    app
+}
+
+fn add_wasm(mut app: Router) -> Router{
+    let routes = vec!["/kerst-2877dfc1b21cf884_bg.wasm"];
+    app = app.route(routes[0],  get(async || wasm(read_file("src/wasm/kerst.wasm".to_owned()).await)));
     app
 }
 
@@ -215,6 +190,8 @@ async fn main() {
     app = add_images(app);
     app = add_videos(app);
     app = add_pdf(app);
+    app = add_js(app);
+    app = add_wasm(app);
     app = add_others(app);
 
     let mut app = app.into_make_service_with_connect_info::<SocketAddr>();
