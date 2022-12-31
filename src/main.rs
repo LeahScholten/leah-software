@@ -118,13 +118,13 @@ fn add_pdf(mut app: Router) -> Router{
 }
 
 fn add_js(mut app: Router) -> Router{
-    let routes = vec!["/kerst-2877dfc1b21cf884.js"];
+    let routes = vec!["/kerst-9919c4562d434f4c.js"];
     app = app.route(routes[0],  get(async || js(read_file("src/js/kerst.js".to_owned()).await)));
     app
 }
 
 fn add_wasm(mut app: Router) -> Router{
-    let routes = vec!["/kerst-2877dfc1b21cf884_bg.wasm"];
+    let routes = vec!["/kerst-9919c4562d434f4c_bg.wasm"];
     app = app.route(routes[0],  get(async || wasm(read_file("src/wasm/kerst.wasm".to_owned()).await)));
     app
 }
