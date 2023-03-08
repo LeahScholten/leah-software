@@ -14,8 +14,7 @@ use hyper::server::{
     accept::Accept,
     conn::{AddrIncoming, Http},
 };
-use service::{load_certificate, create_app};
-use tower::MakeService;
+use service::{load_certificate, create_app, handle_request};
 use std::{
     net::SocketAddr,
     pin::Pin,
@@ -35,8 +34,6 @@ async fn main() {
 
     #[cfg(target_arch = "aarch64")]
     let listener = TcpListener::bind("192.168.178.141:443").await.unwrap();
-    #[cfg(target_arch = "aarch64")]
-    println!("Running ARM server");
     #[cfg(not(target_arch = "aarch64"))]
     let listener = TcpListener::bind("[::]:443").await.unwrap();
     
@@ -64,15 +61,6 @@ async fn main() {
             }
         };
 
-        let svc = app.make_service(&stream);
-
-        let acceptor = acceptor.clone();
-        let protocol = protocol.clone();
-
-        tokio::spawn(async move {
-            if let Ok(stream) = acceptor.accept(stream).await {
-                let _ = protocol.serve_connection(stream, svc.await.unwrap()).await;
-            }
-        });
+        handle_request(&mut app, stream, acceptor.clone(), protocol.clone());
     }
 }

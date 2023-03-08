@@ -1,9 +1,13 @@
 use axum::Router;
+use axum::extract::connect_info::IntoMakeServiceWithConnectInfo;
+use hyper::server::conn::{AddrStream, Http};
+use tokio_rustls::TlsAcceptor;
 use crate::routing::{
     add_css, add_games, add_html_pages, add_images, add_js, add_others, add_pdf, add_videos,
     add_wasm,
 };
 use rustls_pemfile::{certs, pkcs8_private_keys};
+use std::net::SocketAddr;
 use std::sync::Arc;
 use std::{
     fs::File,
@@ -11,6 +15,7 @@ use std::{
 use std::path::{Path, PathBuf};
 use tokio_rustls::rustls::{Certificate, PrivateKey, ServerConfig};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use tower::MakeService;
 
 pub fn rustls_server_config(key: impl AsRef<Path>, cert: impl AsRef<Path>) -> Arc<ServerConfig> {
     let mut key_reader = BufReader::new(File::open(key).unwrap());
@@ -70,4 +75,17 @@ pub fn create_app() -> Router {
     app = add_games(app);
     app = add_others(app);
     app
+}
+
+pub fn handle_request(app: &mut IntoMakeServiceWithConnectInfo<Router, SocketAddr>, stream: AddrStream, acceptor: TlsAcceptor, protocol: Arc<Http>){
+    let svc = app.make_service(&stream);
+
+    let acceptor = acceptor.clone();
+    let protocol = protocol.clone();
+
+    tokio::spawn(async move {
+        if let Ok(stream) = acceptor.accept(stream).await {
+            let _ = protocol.serve_connection(stream, svc.await.unwrap()).await;
+        }
+    });
 }
