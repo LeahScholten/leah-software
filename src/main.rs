@@ -34,7 +34,7 @@ async fn main() {
     let acceptor = TlsAcceptor::from(rustls_config);
 
     #[cfg(target_arch = "aarch64")]
-    let listener = TcpListener::bind("192.168.178.141:80").await.unwrap();
+    let listener = TcpListener::bind("192.168.178.141:443").await.unwrap();
     #[cfg(target_arch = "aarch64")]
     println!("Running ARM server");
     #[cfg(not(target_arch = "aarch64"))]
