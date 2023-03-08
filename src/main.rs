@@ -32,9 +32,6 @@ async fn main() {
 
     let acceptor = TlsAcceptor::from(rustls_config);
 
-    #[cfg(target_arch = "aarch64")]
-    let listener = TcpListener::bind("[::]:80").await.unwrap();
-    #[cfg(not(target_arch = "aarch64"))]
     let listener = TcpListener::bind("[::]:443").await.unwrap();
     
     let mut listener = AddrIncoming::from_listener(listener).unwrap();
