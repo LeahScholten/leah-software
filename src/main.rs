@@ -34,6 +34,8 @@ async fn main() {
 
     #[cfg(target_arch = "aarch64")]
     let listener = TcpListener::bind("192.168.178.141:443").await.unwrap();
+    #[cfg(target_arch = "aarch64")]
+    println!("Running ARM server");
     #[cfg(not(target_arch = "aarch64"))]
     let listener = TcpListener::bind("[::]:443").await.unwrap();
     
