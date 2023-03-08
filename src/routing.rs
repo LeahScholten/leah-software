@@ -6,12 +6,14 @@ use self::response::{css, image, js, pdf, wasm, zip};
 mod response;
 
 async fn read_file(filename: String) -> Vec<u8> {
+    // Read the file as bytes, return the error message as bytes if it fails
     read(filename)
         .await
         .unwrap_or_else(|error| error.to_string().bytes().collect())
 }
 
 pub fn add_html_pages(mut app: Router) -> Router {
+    // Set the HTML page routes
     let routes = [
         "/",
         "/zakelijk.html",
@@ -19,24 +21,28 @@ pub fn add_html_pages(mut app: Router) -> Router {
         "/algemeen.html",
         "/kerst.html",
     ];
-    for route in routes {
-        if route == "/" {
-            app = app.route(
-                route,
-                get(async || Html(read_file("src/html/index.html".to_owned()).await)),
-            );
-        } else {
-            app = app.route(
-                route,
-                get(async || Html(read_file("src/html".to_owned() + route).await)),
-            );
-        }
+
+    // Add a path for the main page
+    app = app.route(
+        "/",
+        get(async || Html(read_file("src/html/index.html".to_owned()).await)),
+    );
+
+    // Add the other routes
+    for &route in routes.iter().skip(1) {
+        app = app.route(
+            route,
+            get(async || Html(read_file("src/html".to_owned() + route).await)),
+        );
     }
     app
 }
 
 pub fn add_css(mut app: Router) -> Router {
+    // Set the routes for css
     let routes = ["/standard.css"];
+
+    // Add the routes
     for route in routes {
         app = app.route(
             route,
@@ -47,7 +53,10 @@ pub fn add_css(mut app: Router) -> Router {
 }
 
 pub fn add_images(mut app: Router) -> Router {
+    // Set the routes to images
     let routes = ["/favicon.ico"];
+
+    // Add the routes
     for route in routes {
         app = app.route(
             route,
@@ -58,6 +67,7 @@ pub fn add_images(mut app: Router) -> Router {
 }
 
 pub fn add_videos(mut app: Router) -> Router {
+    // Set the routes to the videos
     let routes = [
         "/raspberryPico/7segmentCounter.mp4",
         "/raspberryPico/binaryAnalogLeds.mp4",
@@ -72,6 +82,8 @@ pub fn add_videos(mut app: Router) -> Router {
         "/Arduino/automaticLight.mp4",
         "/Arduino/rgbLightShow.mp4",
     ];
+
+    // Add the routes
     for route in routes {
         app = app.route(
             route,
@@ -82,7 +94,10 @@ pub fn add_videos(mut app: Router) -> Router {
 }
 
 pub fn add_pdf(mut app: Router) -> Router {
+    // Set the routes for pdf files
     let routes = ["/cv.pdf"];
+
+    // Add the routes
     for route in routes {
         app = app.route(
             route,
@@ -93,7 +108,10 @@ pub fn add_pdf(mut app: Router) -> Router {
 }
 
 pub fn add_js(mut app: Router) -> Router {
+    // Set the routes for JavaScript
     let routes = ["/kerst-9919c4562d434f4c.js"];
+
+    // Add the routes
     app = app.route(
         routes[0],
         get(async || js(read_file("src/js/kerst.js".to_owned()).await)),
@@ -102,7 +120,10 @@ pub fn add_js(mut app: Router) -> Router {
 }
 
 pub fn add_wasm(mut app: Router) -> Router {
+    // Set the routes to wasm files
     let routes = ["/kerst-9919c4562d434f4c_bg.wasm"];
+
+    // Add the routes
     app = app.route(
         routes[0],
         get(async || wasm(read_file("src/wasm/kerst.wasm".to_owned()).await)),
@@ -111,7 +132,10 @@ pub fn add_wasm(mut app: Router) -> Router {
 }
 
 pub fn add_games(mut app: Router) -> Router {
+    // Set the names of the games
     let games = ["pong"];
+
+    // Add a zip-file for Windows and Linux for every game
     for game in games {
         let route = format!("/games/{game}/windows.zip");
         app = app.route(
@@ -128,7 +152,10 @@ pub fn add_games(mut app: Router) -> Router {
 }
 
 pub fn add_others(mut app: Router) -> Router {
+    // Set the other routes
     let routes = ["/robots.txt"];
+
+    // Add the routes
     for route in routes {
         app = app.route(
             route,
