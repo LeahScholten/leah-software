@@ -14,7 +14,8 @@ use hyper::server::{
     accept::Accept,
     conn::{AddrIncoming, Http},
 };
-use service::{load_certificate, create_app, process_request};
+use service::{load_certificate, create_app};
+use tower::MakeService;
 use std::{
     net::SocketAddr,
     pin::Pin,
@@ -63,6 +64,15 @@ async fn main() {
             }
         };
 
-        process_request(stream, acceptor.clone(), protocol.clone(), &mut app).await;
+        let svc = app.make_service(&stream);
+
+        let acceptor = acceptor.clone();
+        let protocol = protocol.clone();
+
+        tokio::spawn(async move {
+            if let Ok(stream) = acceptor.accept(stream).await {
+                let _ = protocol.serve_connection(stream, svc.await.unwrap()).await;
+            }
+        });
     }
 }
