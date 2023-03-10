@@ -48,17 +48,6 @@ pub fn js(content: Vec<u8>) -> impl IntoResponse {
     (headers, content)
 }
 
-pub fn wasm(content: Vec<u8>) -> impl IntoResponse {
-    // Create a new header
-    let mut headers = HeaderMap::new();
-
-    // Set the content type to wasm
-    headers.insert(header::CONTENT_TYPE, "application/wasm".parse().unwrap());
-
-    // Return the header with the content
-    (headers, content)
-}
-
 pub fn zip(content: Vec<u8>) -> impl IntoResponse {
     // Create a new header
     let mut headers = HeaderMap::new();

@@ -1,7 +1,7 @@
 use axum::{response::Html, routing::get, Router};
 use tokio::fs::read;
 
-use self::response::{css, image, js, pdf, wasm, zip};
+use self::response::{css, image, js, pdf, zip};
 
 mod response;
 
@@ -109,24 +109,12 @@ pub fn add_pdf(mut app: Router) -> Router {
 
 pub fn add_js(mut app: Router) -> Router {
     // Set the routes for JavaScript
-    let routes = ["/kerst-9919c4562d434f4c.js"];
+    let routes = ["/kerst.js"];
 
     // Add the routes
     app = app.route(
         routes[0],
         get(async || js(read_file("src/js/kerst.js".to_owned()).await)),
-    );
-    app
-}
-
-pub fn add_wasm(mut app: Router) -> Router {
-    // Set the routes to wasm files
-    let routes = ["/kerst-9919c4562d434f4c_bg.wasm"];
-
-    // Add the routes
-    app = app.route(
-        routes[0],
-        get(async || wasm(read_file("src/wasm/kerst.wasm".to_owned()).await)),
     );
     app
 }

@@ -1,12 +1,23 @@
-<!DOCTYPE html><html lang="nl"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Een gelukkig nieuwjaar kaart.">
-    <title>Merry Christmas and a happy new year</title>
-    <link rel="stylesheet" href="/standard.css">
+<!DOCTYPE html>
+<html lang="nl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Een gelukkig nieuwjaar kaart.">
+        <title>Merry Christmas and a happy new year</title>
+        <link rel="stylesheet" href="/standard.css">
 
-<link rel="preload" href="/kerst-9919c4562d434f4c_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/kerst-9919c4562d434f4c.js"></head>
-<body>
-
-<script type="module">import init from '/kerst-9919c4562d434f4c.js';init('/kerst-9919c4562d434f4c_bg.wasm');</script></body></html>
+        <script src="/kerst.js"></script>
+    </head>
+    <body onload="main()">
+        <div id="content">
+            <p id="greeting"></p>
+            <p id="message"></p>
+            <p>
+                groetjes,<br/><br/>
+                Michael Scholten
+            </p>
+            <p id="countdown"></p>
+        </div>
+    </body>
+</html>
