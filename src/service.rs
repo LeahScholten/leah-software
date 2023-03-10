@@ -1,5 +1,5 @@
 use crate::routing::{
-    add_css, add_games, add_html_pages, add_images, add_js, add_others, add_pdf, add_videos
+    add_css, add_games, add_html_pages, add_images, add_js, add_others, add_pdf, add_videos,
 };
 use axum::extract::connect_info::IntoMakeServiceWithConnectInfo;
 use axum::Router;
