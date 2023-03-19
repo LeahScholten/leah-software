@@ -121,7 +121,7 @@ pub fn add_js(mut app: Router) -> Router {
 
 pub fn add_games(mut app: Router) -> Router {
     // Set the names of the games
-    let games = ["pong"];
+    let games = ["pong", "conwaysGameOfLife"];
 
     // Add a zip-file for Windows and Linux for every game
     for game in games {
