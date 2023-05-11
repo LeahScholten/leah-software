@@ -77,17 +77,13 @@ pub async fn add_videos(mut app: Router) -> Router {
     // Set the routes to the videos
     let routes = [
         "/raspberryPico/7segmentCounter.mp4",
-        "/raspberryPico/binaryAnalogLeds.mp4",
-        "/raspberryPico/binaryLedCounter.mp4",
         "/ZUMO32U4/objectTracing.mp4",
         "/ZUMO32U4/rotatingInPlace.mp4",
         "/ATmega328P/hapticWire.mp4",
         "/ATmega328P/lightDensityMeter.mp4",
         "/ATmega328P/quadWalkingLightShow.mp4",
-        "/ATmega328P/rgbTraficLight.mp4",
         "/ATmega328P/walkingLight.mp4",
         "/Arduino/automaticLight.mp4",
-        "/Arduino/rgbLightShow.mp4",
     ];
 
     // Add the routes
