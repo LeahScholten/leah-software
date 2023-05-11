@@ -1,6 +1,2 @@
 target
-src/video/*
-src/img/*
-cert.pem
-key.pem
 Cargo.lock
