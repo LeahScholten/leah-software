@@ -1,18 +1,25 @@
-use axum::{response::Html, routing::get, Router};
+use axum::{response::{Html, IntoResponse, Response}, routing::get, Router};
+use hyper::StatusCode;
 use tokio::fs::read;
 
-use self::response::{css, image, js, pdf, zip};
+use self::response::{Css, Image, Js, Pdf, Zip, Mp4, Txt, TupleStruct};
 
 mod response;
 
-async fn read_file(filename: String) -> Vec<u8> {
+async fn read_file<T: IntoResponse + TupleStruct<Vec<u8>>>(filename: String) -> Response {
     // Read the file as bytes, return the error message as bytes if it fails
-    read(filename)
-        .await
-        .unwrap_or_else(|error| error.to_string().bytes().collect())
+    match read(filename)
+        .await{
+        Err(error) =>{
+            let mut response = Html(error.to_string()).into_response();
+            *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
+            response
+        },
+        Ok(content) => T::new(content).into_response()
+    }
 }
 
-pub fn add_html_pages(mut app: Router) -> Router {
+pub async fn add_html_pages(mut app: Router) -> Router {
     // Set the HTML page routes
     let routes = [
         "/",
@@ -25,20 +32,20 @@ pub fn add_html_pages(mut app: Router) -> Router {
     // Add a path for the main page
     app = app.route(
         "/",
-        get(async || Html(read_file("src/html/index.html".to_owned()).await)),
+        get(async || read_file::<Html<Vec<u8>>>("src/html/index.html".to_owned()).await),
     );
 
     // Add the other routes
     for &route in routes.iter().skip(1) {
         app = app.route(
             route,
-            get(async || Html(read_file("src/html".to_owned() + route).await)),
+            get(async || read_file::<Html<Vec<u8>>>("src/html".to_owned() + route).await),
         );
     }
     app
 }
 
-pub fn add_css(mut app: Router) -> Router {
+pub async fn add_css(mut app: Router) -> Router {
     // Set the routes for css
     let routes = ["/standard.css"];
 
@@ -46,13 +53,13 @@ pub fn add_css(mut app: Router) -> Router {
     for route in routes {
         app = app.route(
             route,
-            get(async || css(read_file("src/css".to_owned() + route).await)),
+            get(async || read_file::<Css>("src/css".to_owned() + route).await),
         );
     }
     app
 }
 
-pub fn add_images(mut app: Router) -> Router {
+pub async fn add_images(mut app: Router) -> Router {
     // Set the routes to images
     let routes = ["/favicon.ico"];
 
@@ -60,13 +67,13 @@ pub fn add_images(mut app: Router) -> Router {
     for route in routes {
         app = app.route(
             route,
-            get(async || image(read_file("src/img".to_owned() + route).await)),
+            get(async || read_file::<Image>("src/img".to_owned() + route).await),
         );
     }
     app
 }
 
-pub fn add_videos(mut app: Router) -> Router {
+pub async fn add_videos(mut app: Router) -> Router {
     // Set the routes to the videos
     let routes = [
         "/raspberryPico/7segmentCounter.mp4",
@@ -87,13 +94,13 @@ pub fn add_videos(mut app: Router) -> Router {
     for route in routes {
         app = app.route(
             route,
-            get(async || read_file("src/video".to_owned() + route).await),
+            get(async || read_file::<Mp4>("src/video".to_owned() + route).await),
         );
     }
     app
 }
 
-pub fn add_pdf(mut app: Router) -> Router {
+pub async fn add_pdf(mut app: Router) -> Router {
     // Set the routes for pdf files
     let routes = ["/cv.pdf"];
 
@@ -101,25 +108,25 @@ pub fn add_pdf(mut app: Router) -> Router {
     for route in routes {
         app = app.route(
             route,
-            get(async || pdf(read_file("src/pdf".to_owned() + route).await)),
+            get(async || read_file::<Pdf>("src/pdf".to_owned() + route).await),
         );
     }
     app
 }
 
-pub fn add_js(mut app: Router) -> Router {
+pub async fn add_js(mut app: Router) -> Router {
     // Set the routes for JavaScript
     let routes = ["/kerst.js"];
 
     // Add the routes
     app = app.route(
         routes[0],
-        get(async || js(read_file("src/js/kerst.js".to_owned()).await)),
+        get(async || read_file::<Js>("src/js/kerst.js".to_owned()).await),
     );
     app
 }
 
-pub fn add_games(mut app: Router) -> Router {
+pub async fn add_games(mut app: Router) -> Router {
     // Set the names of the games
     let games = ["pong", "conwaysGameOfLife"];
 
@@ -128,18 +135,18 @@ pub fn add_games(mut app: Router) -> Router {
         let route = format!("/games/{game}/windows.zip");
         app = app.route(
             &route,
-            get(async move || zip(read_file(format!("src/games/{game}/windows.zip")).await)),
+            get(async move || read_file::<Zip>(format!("src/games/{game}/windows.zip")).await),
         );
         let route = format!("/games/{game}/linux.zip");
         app = app.route(
             &route,
-            get(async move || zip(read_file(format!("src/games/{game}/linux.zip")).await)),
+            get(async move || read_file::<Zip>(format!("src/games/{game}/linux.zip")).await),
         );
     }
     app
 }
 
-pub fn add_others(mut app: Router) -> Router {
+pub async fn add_others(mut app: Router) -> Router {
     // Set the other routes
     let routes = ["/robots.txt"];
 
@@ -147,7 +154,7 @@ pub fn add_others(mut app: Router) -> Router {
     for route in routes {
         app = app.route(
             route,
-            get(async || read_file("src".to_owned() + route).await),
+            get(async || read_file::<Txt>("src".to_owned() + route).await),
         );
     }
     app
