@@ -1,25 +1,28 @@
-use axum::{response::{Html, IntoResponse, Response}, routing::get, Router};
+use axum::{
+    response::{Html, IntoResponse, Response},
+    routing::get,
+    Router,
+};
 use hyper::StatusCode;
 use tokio::fs::read;
 
-use self::response::{Css, Image, Js, Pdf, Zip, Mp4, Txt, TupleStruct};
+use self::response::{Css, Image, Js, Mp4, Pdf, TupleStruct, Txt, Zip};
 
 mod response;
 
 async fn read_file<T: IntoResponse + TupleStruct<Vec<u8>>>(filename: String) -> Response {
     // Read the file as bytes, return the error message as bytes if it fails
-    match read(filename)
-        .await{
-        Err(error) =>{
+    match read(filename).await {
+        Err(error) => {
             let mut response = Html(error.to_string()).into_response();
             *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
             response
-        },
-        Ok(content) => T::new(content).into_response()
+        }
+        Ok(content) => T::new(content).into_response(),
     }
 }
 
-pub async fn add_html_pages(mut app: Router) -> Router {
+pub fn add_html_pages(mut app: Router) -> Router {
     // Set the HTML page routes
     let routes = [
         "/",
@@ -27,6 +30,7 @@ pub async fn add_html_pages(mut app: Router) -> Router {
         "/technisch.html",
         "/algemeen.html",
         "/kerst.html",
+        "/birthday.html",
     ];
 
     // Add a path for the main page
@@ -45,7 +49,7 @@ pub async fn add_html_pages(mut app: Router) -> Router {
     app
 }
 
-pub async fn add_css(mut app: Router) -> Router {
+pub fn add_css(mut app: Router) -> Router {
     // Set the routes for css
     let routes = ["/standard.css"];
 
@@ -59,7 +63,7 @@ pub async fn add_css(mut app: Router) -> Router {
     app
 }
 
-pub async fn add_images(mut app: Router) -> Router {
+pub fn add_images(mut app: Router) -> Router {
     // Set the routes to images
     let routes = ["/favicon.ico"];
 
@@ -73,7 +77,7 @@ pub async fn add_images(mut app: Router) -> Router {
     app
 }
 
-pub async fn add_videos(mut app: Router) -> Router {
+pub fn add_videos(mut app: Router) -> Router {
     // Set the routes to the videos
     let routes = [
         "/raspberryPico/7segmentCounter.mp4",
@@ -96,7 +100,7 @@ pub async fn add_videos(mut app: Router) -> Router {
     app
 }
 
-pub async fn add_pdf(mut app: Router) -> Router {
+pub fn add_pdf(mut app: Router) -> Router {
     // Set the routes for pdf files
     let routes = ["/cv.pdf"];
 
@@ -110,7 +114,7 @@ pub async fn add_pdf(mut app: Router) -> Router {
     app
 }
 
-pub async fn add_js(mut app: Router) -> Router {
+pub fn add_js(mut app: Router) -> Router {
     // Set the routes for JavaScript
     let routes = ["/kerst.js"];
 
@@ -122,7 +126,7 @@ pub async fn add_js(mut app: Router) -> Router {
     app
 }
 
-pub async fn add_games(mut app: Router) -> Router {
+pub fn add_games(mut app: Router) -> Router {
     // Set the names of the games
     let games = ["pong", "conwaysGameOfLife"];
 
@@ -142,7 +146,7 @@ pub async fn add_games(mut app: Router) -> Router {
     app
 }
 
-pub async fn add_others(mut app: Router) -> Router {
+pub fn add_others(mut app: Router) -> Router {
     // Set the other routes
     let routes = ["/robots.txt"];
 

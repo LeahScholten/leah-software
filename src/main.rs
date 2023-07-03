@@ -46,12 +46,11 @@ async fn main() {
     let app = create_app();
 
     // Turn the application into a service
-    let mut app = app.await.into_make_service_with_connect_info::<SocketAddr>();
+    let mut app = app.into_make_service_with_connect_info::<SocketAddr>();
 
     loop {
         // Wait for a connection
-        let Some(stream) = poll_fn(|cx| Pin::new(&mut listener).poll_accept(cx))
-            .await else{
+        let Some(stream) = poll_fn(|cx| Pin::new(&mut listener).poll_accept(cx)).await else {
             println!("Failed to poll for a new request: no request found!");
             return;
         };

@@ -68,17 +68,17 @@ pub fn load_certificate() -> Arc<ServerConfig> {
     rustls_config
 }
 
-pub async fn create_app() -> Router {
+pub fn create_app() -> Router {
     // Create a router with every file in the server
     let mut app = Router::new();
-    app = add_html_pages(app).await;
-    app = add_css(app).await;
-    app = add_images(app).await;
-    app = add_videos(app).await;
-    app = add_pdf(app).await;
-    app = add_js(app).await;
-    app = add_games(app).await;
-    app = add_others(app).await;
+    app = add_html_pages(app);
+    app = add_css(app);
+    app = add_images(app);
+    app = add_videos(app);
+    app = add_pdf(app);
+    app = add_js(app);
+    app = add_games(app);
+    app = add_others(app);
     app
 }
 
