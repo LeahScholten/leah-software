@@ -24,12 +24,6 @@ mod service;
 
 #[tokio::main]
 async fn main() {
-    // Load the HTTPS certificates
-    let rustls_config = load_certificate();
-
-    // Create a Tls acceptor from the certificates
-    let acceptor = TlsAcceptor::from(rustls_config);
-
     // Create a network listener for https
     #[cfg(target_arch = "aarch64")]
     let listener = TcpListener::bind("192.168.178.141:443").await.unwrap();
@@ -49,6 +43,12 @@ async fn main() {
     let mut app = app.into_make_service_with_connect_info::<SocketAddr>();
 
     loop {
+        // Load the HTTPS certificates
+        let rustls_config = load_certificate();
+
+        // Create a Tls acceptor from the certificates
+        let acceptor = TlsAcceptor::from(rustls_config);
+
         // Wait for a connection
         let Some(stream) = poll_fn(|cx| Pin::new(&mut listener).poll_accept(cx)).await else {
             println!("Failed to poll for a new request: no request found!");
