@@ -15,15 +15,26 @@ use hyper::server::{
     conn::{AddrIncoming, Http},
 };
 use service::{create_app, handle_request, load_certificate};
-use std::{net::SocketAddr, pin::Pin, sync::Arc};
+use std::{net::SocketAddr, pin::Pin, sync::Arc, time::Instant};
 use tokio::net::TcpListener;
 use tokio_rustls::TlsAcceptor;
 
 mod routing;
 mod service;
 
+const SECONDS_PER_DAY: u64 = 3600 * 24;
+
 #[tokio::main]
 async fn main() {
+    // Load the HTTPS certificates
+    let mut rustls_config = load_certificate();
+
+    // Create a Tls acceptor from the certificates
+    let mut acceptor = TlsAcceptor::from(rustls_config);
+
+    // Used to calculate the time since the last update
+    let mut last_tls_update = Instant::now();
+
     // Create a network listener for https
     #[cfg(target_arch = "aarch64")]
     let listener = TcpListener::bind("192.168.178.141:443").await.unwrap();
@@ -58,11 +69,12 @@ async fn main() {
             }
         };
 
-        // Load the HTTPS certificates
-        let rustls_config = load_certificate();
-
-        // Create a Tls acceptor from the certificates
-        let acceptor = TlsAcceptor::from(rustls_config);
+        // Update the certificate if the last update was more than a day ago
+        if last_tls_update.elapsed().as_secs() > SECONDS_PER_DAY {
+            rustls_config = load_certificate();
+            acceptor = TlsAcceptor::from(rustls_config);
+            last_tls_update = Instant::now();
+        }
 
         // Handle the request
         handle_request(&mut app, stream, acceptor.clone(), protocol.clone());
