@@ -32,7 +32,9 @@ async fn main() {
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
-    server().await;
+    loop {
+        server().await;
+    }
 }
 
 async fn server() {
