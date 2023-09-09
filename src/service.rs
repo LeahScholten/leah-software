@@ -6,13 +6,25 @@ use axum::Router;
 use hyper::server::conn::{AddrStream, Http};
 use rustls_pemfile::{certs, pkcs8_private_keys};
 use std::net::SocketAddr;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::sync::Arc;
 use std::{fs::File, io::BufReader};
 use tokio_rustls::rustls::{Certificate, PrivateKey, ServerConfig};
 use tokio_rustls::TlsAcceptor;
 use tower::MakeService;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+#[cfg(not(target_arch = "aarch64"))]
+pub const KEY_CERT: (&str, &str) = (
+    "../michaeljoy_certificates/key.pem",
+    "../michaeljoy_certificates/certificate.pem",
+);
+
+#[cfg(target_arch = "aarch64")]
+pub const KEY_CERT: (&str, &str) = (
+    "/etc/letsencrypt/live/michaeljoy.nl/privkey.pem",
+    "/etc/letsencrypt/live/michaeljoy.nl/fullchain.pem",
+);
 
 pub fn rustls_server_config(key: impl AsRef<Path>, cert: impl AsRef<Path>) -> Arc<ServerConfig> {
     // Read the key and certificate files
@@ -42,30 +54,8 @@ pub fn rustls_server_config(key: impl AsRef<Path>, cert: impl AsRef<Path>) -> Ar
 }
 
 pub fn load_certificate() -> Arc<ServerConfig> {
-    // Create a registry for the key and certificate
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "example_tls_rustls=debug".into()),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
-
     // Read the key and certificate
-    #[cfg(target_arch = "aarch64")]
-    let rustls_config = rustls_server_config(
-        PathBuf::from("/etc/letsencrypt/live/michaeljoy.nl/privkey.pem"),
-        PathBuf::from("/etc/letsencrypt/live/michaeljoy.nl/fullchain.pem"),
-    );
-
-    #[cfg(not(target_arch = "aarch64"))]
-    let rustls_config = rustls_server_config(
-        PathBuf::from("../michaeljoy_certificates/key.pem"),
-        PathBuf::from("../michaeljoy_certificates/certificate.pem"),
-    );
-
-    // Return the resulting configuration
-    rustls_config
+    rustls_server_config(KEY_CERT.0, KEY_CERT.1)
 }
 
 pub fn create_app() -> Router {

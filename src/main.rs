@@ -14,26 +14,36 @@ use hyper::server::{
     accept::Accept,
     conn::{AddrIncoming, Http},
 };
-use service::{create_app, handle_request, load_certificate};
-use std::{net::SocketAddr, pin::Pin, sync::Arc, time::Instant};
+use service::{create_app, handle_request, load_certificate, KEY_CERT};
+use std::{fs::File, net::SocketAddr, pin::Pin, sync::Arc, time::SystemTime};
 use tokio::net::TcpListener;
 use tokio_rustls::TlsAcceptor;
 
 mod routing;
 mod service;
 
-const SECONDS_PER_DAY: u64 = 3600 * 24;
-
 #[tokio::main]
 async fn main() {
+    // Create a registry for the key and certificate
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "example_tls_rustls=debug".into()),
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+    server().await;
+}
+
+async fn server() {
     // Load the HTTPS certificates
-    let mut rustls_config = load_certificate();
+    let rustls_config = load_certificate();
 
     // Create a Tls acceptor from the certificates
-    let mut acceptor = TlsAcceptor::from(rustls_config);
+    let acceptor = TlsAcceptor::from(rustls_config);
 
     // Used to calculate the time since the last update
-    let mut last_tls_update = Instant::now();
+    let last_tls_update = SystemTime::now();
 
     // Create a network listener for https
     #[cfg(target_arch = "aarch64")]
@@ -69,14 +79,19 @@ async fn main() {
             }
         };
 
-        // Update the certificate if the last update was more than a day ago
-        if last_tls_update.elapsed().as_secs() > SECONDS_PER_DAY {
-            rustls_config = load_certificate();
-            acceptor = TlsAcceptor::from(rustls_config);
-            last_tls_update = Instant::now();
-        }
-
         // Handle the request
         handle_request(&mut app, stream, acceptor.clone(), protocol.clone());
+
+        // Update the certificate if the last update was more than a day ago
+        if File::open(KEY_CERT.0)
+            .unwrap()
+            .metadata()
+            .unwrap()
+            .modified()
+            .unwrap()
+            > last_tls_update
+        {
+            return;
+        }
     }
 }
