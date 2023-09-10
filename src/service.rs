@@ -12,7 +12,6 @@ use std::{fs::File, io::BufReader};
 use tokio_rustls::rustls::{Certificate, PrivateKey, ServerConfig};
 use tokio_rustls::TlsAcceptor;
 use tower::MakeService;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[cfg(not(target_arch = "aarch64"))]
 pub const KEY_CERT: (&str, &str) = (

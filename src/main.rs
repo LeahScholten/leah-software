@@ -18,6 +18,7 @@ use service::{create_app, handle_request, load_certificate, KEY_CERT};
 use std::{fs::File, net::SocketAddr, pin::Pin, sync::Arc, time::SystemTime};
 use tokio::net::TcpListener;
 use tokio_rustls::TlsAcceptor;
+use tracing_subscriber::{prelude::__tracing_subscriber_SubscriberExt, util::SubscriberInitExt};
 
 mod routing;
 mod service;
