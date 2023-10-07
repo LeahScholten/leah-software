@@ -31,6 +31,7 @@ pub fn add_html_pages(mut app: Router) -> Router {
         "/algemeen.html",
         "/kerst.html",
         "/birthday.html",
+        "/cv.html",
     ];
 
     // Add a path for the main page
@@ -65,7 +66,7 @@ pub fn add_css(mut app: Router) -> Router {
 
 pub fn add_images(mut app: Router) -> Router {
     // Set the routes to images
-    let routes = ["/favicon.ico"];
+    let routes = ["/favicon.ico", "/cv_foto.jpeg"];
 
     // Add the routes
     for route in routes {

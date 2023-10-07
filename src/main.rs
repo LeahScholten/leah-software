@@ -52,7 +52,7 @@ async fn server() {
     #[cfg(target_arch = "aarch64")]
     let listener = TcpListener::bind("192.168.178.141:443").await.unwrap();
     #[cfg(not(target_arch = "aarch64"))]
-    let listener = TcpListener::bind("[::]:443").await.unwrap();
+    let listener = TcpListener::bind("[::]:2000").await.unwrap();
 
     // Turn the network listener into a network stream
     let mut listener = AddrIncoming::from_listener(listener).unwrap();
