@@ -5,78 +5,108 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Verjaardagskaart">
         <title>Mijn CV</title>
-        <link href="/standard.css" rel="stylesheet"/>
+        <style>
+        #content{
+            display: table;
+            padding: auto;
+            margin: auto;
+            max-width: 100%;
+            width: 700px;
+        }
+        </style>
     </head>
     <body>
         <div id="content">
             <h1>Michael Scholten</h1>
+            <table border="1px">
+                <caption>Contents</caption>
+                <thead>
+                    <tr>
+                        <td><a href="#opleiding">opleiding</a></td>
+                        <td><a href="#vaardigheden">vaardigheden en talenten</a></td>
+                        <td><a href="#werkervaring">werkervaring</a></td>
+                    </tr>
+                </thead>
+                <tr>
+                    <td>Een overzicht van mijn voltooide opleidingen</td>
+                    <td>Een overzicht van mijn vaardigheden</td>
+                    <td>Een overzicht van mijn stages en banen</td>
+                </tr>
+            </table>
             <hr>
-            <p>Nieuwersluisstraat 13, 2546RP Den Haag | +31637006562 | <a href="michael-scholten@hotmail.nl">michael-scholten@hotmail.nl</a></p>
+            <p>Nieuwersluisstraat 13, 2546RP Den Haag | <a href="tel:+31637006562">+31637006562</a> | <a href="mailto:michael-scholten@hotmail.nl" target="_blank">michael-scholten@hotmail.nl</a></p>
 
             <h2>Foto</h2>
-            <img src="/cv_foto.jpeg" width="50%">
+            <img src="/cv_foto.jpeg" width="50%" alt="foto van mij">
 
-            <h2>Opleiding</h2>
-            <h3>HBO BACHELOR | 2020 - HEDEN | HAAGSE HOGESCHOOL</h3>
+            <h2 id="opleiding">Opleiding</h2>
+            <h3>HBO BACHELOR | 2020 - HEDEN | <a href="https://hhs.nl">HAAGSE HOGESCHOOL</a></h3>
             <h4>Opleiding: HBO-ICT</h4>
             <ol>
                 <li>Differentiatie: NSE (Network and System Engineering)</li>
                 <li>Minor: Game Development</li>
                 <li>Afstudeerprogramma: Innovative Development</li>
             </ol>
-            <h3>MBO NIVEAU 4 | 2017 - 2020 | ROC MONDRIAAN</h3>
+            <h3>MBO NIVEAU 4 | 2017 - 2020 | <a href="https://rocmondriaan.nl">ROC MONDRIAAN</a></h3>
             <h4>Opleiding: Bedrijfsadministrateur</h4>
-            <h3>VMBO TL/MAVO | 2013 - 2017 | COLLEGE ST. PAUL</h3>
+            <h3>VMBO TL/MAVO | 2013 - 2017 | <a href="https://collegestpaul.nl/">COLLEGE ST. PAUL</a></h3>
             <h4>Richting: Economie</h4>
 
-            <h2>Vaardigheden en talenten</h2>
+            <h2 id="vaardigheden">Vaardigheden en talenten</h2>
             <h3>PROGRAMMEREN</h3>
             <p>Talen, libraries en frameworks waar ik ervaring mee heb in volgorde van voorkeur en ervaring:</p>
             <ul>
-                <li>Rust (2022)</li>
-                <ul>
-                    <li>Tokio</li>
-                    <li>Rayon</li>
-                    <li>Rand</li>
-                    <li>Chrono</li>
-                    <li>Clap</li>
-                    <li>Libc</li>
-                </ul>
-                <li>C (2019)</li>
-                <ul>
-                    <li>AVR-C</li>
-                </ul>
-                <li>C++ (2019)</li>
-                <ul>
+                <li>Rust (2022)
+                    <ul>
+                        <li>Tokio</li>
+                        <li>Rayon</li>
+                        <li>Rand</li>
+                        <li>Chrono</li>
+                        <li>Clap</li>
+                        <li>Libc</li>
+                    </ul>
+                </li>
+                <li>C (2019)
+                    <ul>
+                        <li>AVR-C</li>
+                    </ul>
+                </li>
+                <li>C++ (2019)
+                    <ul>
                     <li>OpenCV</li>
                     <li>Qt</li>
                     <li>Arduino</li>
-                </ul>
-                <li>Python (2019)</li>
-                <ul>
-                    <li>OpenCV</li>
-                </ul>
+                    </ul>
+                </li>
+                <li>Python (2019)
+                    <ul>
+                        <li>OpenCV</li>
+                    </ul>
+                </li>
                 <li>C# (2019)</li>
                 <li>JavaScript (2018)</li>
                 <li>CSS (2018)</li>
                 <li>HTML (2018)</li>
-                <li>Assembly (lezen)</li>
-                <ul>
-                    <li>ARM (2020)</li>
-                    <li>X64</li>
+                <li>Assembly (lezen)
                     <ul>
-                        <li>masm (2020)</li>
-                        <li>nasm (2022)</li>
+                        <li>ARM (2020)</li>
+                        <li>X64
+                            <ul>
+                                <li>masm (2020)</li>
+                                <li>nasm (2022)</li>
+                            </ul>
+                        </li>
                     </ul>
-                </ul>
+                </li>
             </ul>
             <h3>BESTURINGSYSTEMEN</h3>
             <ul>
-                <li>Linux</li>
-                <ul>
-                    <li>Debian (2021)</li>
-                    <li>Arch (2022)</li>
-                </ul>
+                <li>Linux
+                    <ul>
+                        <li>Debian (2021)</li>
+                        <li>Arch (2022)</li>
+                    </ul>
+                </li>
                 <li>Windows (2007)</li>
             </ul>
             <h3>BOEKHOUDEN (2017 - 2020)</h3>
@@ -87,72 +117,83 @@
                 <li>PowerPoint presentaties maken</li>
             </ul>
 
-            <h2>Werkervaring</h2>
-            <h3>EMBEDDED SOFTWARE DEVELOPER | LECTORAAT SMART SENSOR SYSTEMS (HAAGSE HOGESCHOOL) | september 2022 - januari 2023</h3>
+            <h2 id="werkervaring">Werkervaring</h2>
+            <h3>EMBEDDED SOFTWARE DEVELOPER | <a href="https://hhs.nl/smart-sensor-systems">LECTORAAT SMART SENSOR SYSTEMS (HAAGSE HOGESCHOOL)</a> | september 2022 - januari 2023</h3>
             <ul>
                 <li>Software installatie</li>
-                <li>Communicatie</li>
-                <ul>
-                    <li>PowerPoint</li>
-                    <li>Vergaderingen bijwonen</li>
-                </ul>
-                <li>Programmeren</li>
-                <lu>
-                    <li>C</li>
+                <li>Communicatie
                     <ul>
-                        <li>Libiio</li>
-                        <li>Pico SDK</li>
+                        <li>PowerPoint</li>
+                        <li>Vergaderingen bijwonen</li>
+                    </ul>
+                </li>
+                <li>Programmeren
+                    <ul>
+                        <li>C
+                            <ul>
+                                <li>Libiio</li>
+                                <li>Pico SDK</li>
+                                <li>FFTW3</li>
+                                <li>Sysfs</li>
+                            </ul>
+                        </li>
+                        <li>Rust
+                            <ul>
+                                <li>Industrial-io</li>
+                                <li>FFT</li>
+                            </ul>
+                        </li>
+                        <li>C++
+                            <ul>
+                                <li>Libiio</li>
+                                <li>FFTW3</li>
+                            </ul>
+                        </li>
+                    </lu>
+                </li>
+                <li>GPS
+                    <ul>
+                        <li>GNRMC filteren en parsen</li>
                         <li>FFTW3</li>
-                        <li>Sysfs</li>
                     </ul>
-                    <li>Rust</li>
+                </li>
+                <li>Testen
                     <ul>
-                        <li>Industrial-io</li>
-                        <li>FFT</li>
+                        <li>Functie generator</li>
+                        <li>Oscilloscoop</li>
                     </ul>
-                    <li>C++</li>
-                    <ul>
-                        <li>Libiio</li>
-                        <li>FFTW3</li>
-                    </ul>
-                </lu>
-                <li>GPS</li>
-                <ul>
-                    <li>GNRMC filteren en parsen</li>
-                    <li>FFTW3</li>
-                </ul>
-                <li>Testen</li>
-                <ul>
-                    <li>Functie generator</li>
-                    <li>Oscilloscoop</li>
-                </ul>
+                </li>
                 <li>UML</li>
             </ul>
-            <h3>STUDENT | STUDENT AAN HUIS | 12 juli 2021 - februari 2022</h3>
+            <h3>STUDENT | <a href="https://www.studentaanhuis.nl/">STUDENT AAN HUIS</a> | 12 juli 2021 - februari 2022</h3>
             <ul>
                 <li>Klanten waren grotendeels tevreden</li>
-                <li>Geholpen met de volgende vaardigheden</li>
-                <ul>
-                    <li>Apparatuur</li>
+                <li>Geholpen met de volgende vaardigheden
                     <ul>
-                        <li>Computer: Windows</li>
-                        <li>Smartphone/tablet: Android</li>
+                        <li>Apparatuur
+                            <ul>
+                                <li>Computer: Windows</li>
+                                <li>Smartphone/tablet: Android</li>
+                            </ul>
+                        </li>
+                        <li>Software
+                            <ul>
+                                <li>Browser</li>
+                                <li>E-mailprogramma</li>
+                                <li>Office</li>
+                                <li>Virusscanner</li>
+                            </ul>
+                        </li>
+                        <li>Handeling
+                            <ul>
+                                <li>APK/opschonen</li>
+                                <li>Installeren/instellen software</li>
+                                <li>Installeren PC</li>
+                                <li>Opstarten/afsluiten/vastlopen PC</li>
+                            </ul>
+                        </li>
                     </ul>
-                    <li>Software</li>
-                    <ul>
-                        <li>Browser</li>
-                        <li>E-mailprogramma</li>
-                        <li>Office</li>
-                        <li>Virusscanner</li>
-                    </ul>
-                    <li>Handeling</li>
-                    <ul>
-                        <li>APK/opschonen</li>
-                        <li>Installeren/instellen software</li>
-                        <li>Installeren PC</li>
-                        <li>Opstarten/afsluiten/vastlopen PC</li>
-                    </ul>
-                </ul>
+                </li>
             </ul>
             <h3>ADMINISTRATEUR | SVARGA | september 2019 - januari 2020</h3>
             <ul>
@@ -161,23 +202,23 @@
                 <li>Betalingen op de goede rekeningen boeken bij bankboek</li>
                 <li>Facturen en betalingen matchen bij bankboek</li>
             </ul>
-            <h3>MEDEWERKER CREDITEUREN ADMINISTRATIE INKOOP | GEMEENTE DEN HAAG | februari tot april 2019</h3>
+            <h3>MEDEWERKER CREDITEUREN ADMINISTRATIE INKOOP | <a href="https://denhaag.nl/">GEMEENTE DEN HAAG</a> | februari tot april 2019</h3>
             <ul>
                 <li>Inkooporders verwerken en verzenden naar leveranciers</li>
             </ul>
-            <h3>MEDEWERKER CREDITEUREN ADMINISTRATIE | GEMEENTE DEN HAAG | 2018</h3>
+            <h3>MEDEWERKER CREDITEUREN ADMINISTRATIE | <a href="https://denhaag.nl/">GEMEENTE DEN HAAG</a> | april tot en met juli 2018</h3>
             <ul>
                 <li>April tot juli stage en in juli als vakantiewerk</li>
                 <li>Inboeken van facturen</li>
                 <li>Nieuwe leveranciers in het systeem invoeren</li>
                 <li>Facturen klaarmaken om betaald te worden</li>
             </ul>
-            <h3>STAGE ALS ADMINISTRATIEF MEDEWERKER | GEMEENTE DEN HAAG | 2017</h3>
+            <h3>STAGE ALS ADMINISTRATIEF MEDEWERKER | <a href="https://denhaag.nl/">GEMEENTE DEN HAAG</a> | 2017</h3>
             <ul>
                 <li>1 week inzendformulieren maken en versturen voor inzenden rozen voor het internationale rozenconcour in Den Haag</li>
                 <li>1 week assisteren bij onderhouden en plaatsen van plantenbakken in de stad</li>
             </ul>
-            <h3>STAGE ALS HULP CONCIERGE | S.B.O. DE HAAGSE BEEK | 2016</h3>
+            <h3>STAGE ALS HULP CONCIERGE | <a href="https://sbodehaagsebeek.nl/">S.B.O. DE HAAGSE BEEK</a> | 2016</h3>
             <ul>
                 <li>Koffie zetten en rondbrengen</li>
                 <li>Schoolmelk naar lokalen brengen</li>
