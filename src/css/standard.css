@@ -1,10 +1,10 @@
 body{
     background-color: rgb(16, 32, 64);
 }
+
 #content{
     color: rgb(240, 224, 192);
     display: table;
-    padding: auto;
     margin: auto;
     max-width: 90%;
 }
