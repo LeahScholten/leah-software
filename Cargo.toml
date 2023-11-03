@@ -12,12 +12,9 @@ codegen-units = 1 # maximize size reduction optimizations
 panic = "abort"   # abort instead of unwinding the code on panic
 
 [dependencies]
-axum = "0.6"
-futures-util = "0.3"
+chrono = "0.4.31"
 hyper = {version = "0.14", features = ["full"]}
+hyper-rustls = "0.24.2"
+rustls = { version = "0.21.5", features = ["tls12"] }
 rustls-pemfile = "1.0"
 tokio = {version = "1", features = ["full"]}
-tokio-rustls = "0.24"
-tower = {version = "0.4", features = ["make"]}
-tracing = "0.1"
-tracing-subscriber = {version = "0.3", features = ["env-filter"]}

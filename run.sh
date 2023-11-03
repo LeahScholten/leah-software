@@ -1,1 +1,1 @@
-cargo build --release && sudo target/release/michaeljoy
+cargo build --release > logs.txt

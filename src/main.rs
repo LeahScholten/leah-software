@@ -2,6 +2,9 @@
     clippy::panic,
     clippy::panic_in_result_fn,
     clippy::panicking_unwrap,
+    clippy::unwrap_in_result,
+    clippy::unwrap_in_result,
+    clippy::unwrap_used,
     non_fmt_panics,
     unconditional_panic,
     unsafe_code
@@ -9,92 +12,185 @@
 #![warn(clippy::pedantic, clippy::nursery)]
 #![feature(async_closure)]
 
-use futures_util::future::poll_fn;
-use hyper::server::{
-    accept::Accept,
-    conn::{AddrIncoming, Http},
+use hyper::{
+    server::conn::AddrIncoming,
+    service::{make_service_fn, service_fn},
+    Body, Request, Response, Server, StatusCode,
 };
-use service::{create_app, handle_request, load_certificate, KEY_CERT};
-use std::{fs::File, net::SocketAddr, pin::Pin, sync::Arc, time::SystemTime};
-use tokio::net::TcpListener;
-use tokio_rustls::TlsAcceptor;
-use tracing_subscriber::{prelude::__tracing_subscriber_SubscriberExt, util::SubscriberInitExt};
+use hyper_rustls::TlsAcceptor;
+use std::{
+    fs, io,
+    net::{Ipv4Addr, SocketAddr},
+};
+use tokio::{
+    fs as tokio_fs,
+    io::{AsyncBufRead, AsyncBufReadExt},
+};
 
-mod routing;
-mod service;
+/// Test key and certificate
+#[cfg(target_arch = "x86_64")]
+const CERT_KEY: (&str, &str) = (
+    "../michaeljoy_certificates/certificate.pem",
+    "../michaeljoy_certificates/key.pem",
+);
+
+#[cfg(not(target_arch = "x86_64"))]
+const CERT_KEY: (&str, &str) = (
+    "/etc/letsencrypt/live/michaeljoy.nl/fullchain.pem",
+    "/etc/letsencrypt/live/michaeljoy.nl/privkey.pem",
+);
+
+fn error(err: impl std::fmt::Display) -> io::Error {
+    io::Error::new(io::ErrorKind::Other, err.to_string())
+}
+
+async fn find_path<T: AsyncBufRead + Unpin + Send>(
+    mut lines: tokio::io::Lines<T>,
+    expected_uri: &str,
+) -> Option<String> {
+    // Look for the file corresponding to the requested path
+    let mut path = None;
+    while let Ok(Some(line)) = lines.next_line().await {
+        // Split the line in sections
+        let mut sections = line.split(',');
+
+        // Take the uri part, skip this line if there is none
+        let Some(uri) = sections.next().map(str::trim) else {
+            continue;
+        };
+
+        // Skip this line if the uri wasn't the expected uri
+        if uri != expected_uri {
+            continue;
+        }
+
+        // Take the path corresponding to the uri
+        path = sections.next().map(|path| path.trim().to_owned());
+
+        // If there was a path, break out of the loop
+        if path.is_some() {
+            break;
+        }
+    }
+    path
+}
+
+async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
+    // Create an empty response
+    let mut response = Response::new(Body::empty());
+
+    // Try to open the paths file, return an internal server error on failure
+    let Ok(paths_file) = tokio_fs::File::open("files.csv").await else {
+        *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
+        *response.body_mut() = "Failed to load paths".into();
+        return Ok(response);
+    };
+
+    // Create a buffer for reading the file
+    let lines = tokio::io::BufReader::new(paths_file).lines();
+
+    let now = chrono::Local::now();
+
+    // Take the requested path
+    let expected_uri = req.uri().path();
+    println!("{now}\n{expected_uri}\n");
+
+    match find_path(lines, expected_uri).await {
+        // If the requested page wasn't found
+        None => {
+            // Send a 404 page with the NOT FOUND status code
+            *response.body_mut() = "<h1>404 page not found!</h1>".into();
+            *response.status_mut() = StatusCode::NOT_FOUND;
+        }
+        // Otherwise, try to read the file
+        Some(path) => match tokio_fs::read(path).await {
+            // If the file was read successfully
+            Ok(content) => {
+                // Set the body to the content of the file, use the accepted status code
+                *response.body_mut() = content.into();
+                *response.status_mut() = StatusCode::ACCEPTED;
+            }
+            // Otherwise
+            Err(e) => {
+                // Set the body to the error message with the request to send it to me
+                // Set the status code to internal server error
+                *response.body_mut() =
+                    ("Send the following error to michael-scholten@hotmail.nl<br/>".to_owned()
+                        + &e.to_string())
+                        .into();
+                *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
+            }
+        },
+    }
+
+    Ok(response)
+}
 
 #[tokio::main]
 async fn main() {
-    // Create a registry for the key and certificate
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "example_tls_rustls=debug".into()),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+    let port = 4430;
+    let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), port).into();
+
     loop {
-        server().await;
+        // Load public certificate
+        let Ok(certs) = load_certs(CERT_KEY.0) else {
+            continue;
+        };
+
+        // Load private key
+        let Ok(key) = load_private_key(CERT_KEY.1) else {
+            continue;
+        };
+
+        // Build TLS configuration
+
+        // Create a TCP listener via tokio
+        let Ok(incoming) = AddrIncoming::bind(&address) else {
+            continue;
+        };
+        let Ok(acceptor) = TlsAcceptor::builder()
+            .with_single_cert(certs, key)
+            .map_err(error)
+            .map(|acceptor| acceptor.with_all_versions_alpn().with_incoming(incoming))
+        else {
+            continue;
+        };
+        let service = make_service_fn(|_| async { Ok::<_, io::Error>(service_fn(michaeljoy)) });
+        let server = Server::builder(acceptor).serve(service);
+
+        // Run the future, keep going until an error occurs
+        eprintln!("Starting to serve on https://{address}");
+        server.await.ok();
     }
 }
 
-async fn server() {
-    // Load the HTTPS certificates
-    let rustls_config = load_certificate();
+/// Load public certificate from file
+fn load_certs(filename: &str) -> io::Result<Vec<rustls::Certificate>> {
+    // Open certificate file
+    let certificate =
+        fs::File::open(filename).map_err(|e| error(format!("Failed to open {filename}:{e}")))?;
+    let mut reader = io::BufReader::new(certificate);
 
-    // Create a Tls acceptor from the certificates
-    let acceptor = TlsAcceptor::from(rustls_config);
+    // Load and return certificate
+    let certs =
+        rustls_pemfile::certs(&mut reader).map_err(|_| error("Failed to load certificate"))?;
 
-    // Used to calculate the time since the last update
-    let last_tls_update = SystemTime::now();
+    Ok(certs.into_iter().map(rustls::Certificate).collect())
+}
 
-    // Create a network listener for https
-    #[cfg(target_arch = "aarch64")]
-    let listener = TcpListener::bind("192.168.178.141:443").await.unwrap();
-    #[cfg(not(target_arch = "aarch64"))]
-    let listener = TcpListener::bind("[::]:2000").await.unwrap();
+/// Load private key from file
+fn load_private_key(filename: &str) -> io::Result<rustls::PrivateKey> {
+    // Open keyfile
+    let keyfile =
+        fs::File::open(filename).map_err(|e| error(format!("Failed to open {filename}: {e}")))?;
+    let mut reader = io::BufReader::new(keyfile);
 
-    // Turn the network listener into a network stream
-    let mut listener = AddrIncoming::from_listener(listener).unwrap();
-
-    // Create a HTTP protocol instance
-    let protocol = Arc::new(Http::new());
-
-    // build the application
-    let app = create_app();
-
-    // Turn the application into a service
-    let mut app = app.into_make_service_with_connect_info::<SocketAddr>();
-
-    loop {
-        // Wait for a connection
-        let Some(stream) = poll_fn(|cx| Pin::new(&mut listener).poll_accept(cx)).await else {
-            println!("Failed to poll for a new request: no request found!");
-            return;
-        };
-
-        // Skip this connection if it is invalid
-        let stream = match stream {
-            Ok(stream) => stream,
-            Err(error) => {
-                println!("Failed to poll for a new request: {error:?}");
-                return;
-            }
-        };
-
-        // Handle the request
-        handle_request(&mut app, stream, acceptor.clone(), protocol.clone());
-
-        // Update the certificate if the last update was more than a day ago
-        if File::open(KEY_CERT.0)
-            .unwrap()
-            .metadata()
-            .unwrap()
-            .modified()
-            .unwrap()
-            > last_tls_update
-        {
-            return;
-        }
+    // Load and return a single private key
+    let keys = rustls_pemfile::pkcs8_private_keys(&mut reader)
+        .map_err(|_| error("Failed to load private key"))?;
+    if keys.is_empty() {
+        return Err(error("Expected atleast 1 private key"));
     }
+
+    Ok(rustls::PrivateKey(keys[0].clone()))
 }
