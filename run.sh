@@ -1,1 +1,1 @@
-cargo build --release > logs.txt
+cargo run --release > logs.txt
