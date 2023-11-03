@@ -134,11 +134,13 @@ async fn main() {
     loop {
         // Load public certificate
         let Ok(certs) = load_certs(CERT_KEY.0) else {
+            eprintln!("Failed to load certificates");
             continue;
         };
 
         // Load private key
         let Ok(key) = load_private_key(CERT_KEY.1) else {
+            eprintln!("Failed to load keys");
             continue;
         };
 
@@ -146,6 +148,7 @@ async fn main() {
 
         // Create a TCP listener via tokio
         let Ok(incoming) = AddrIncoming::bind(&address) else {
+            eprintln!("Failed to bind to {address}");
             continue;
         };
         let Ok(acceptor) = TlsAcceptor::builder()
@@ -153,6 +156,7 @@ async fn main() {
             .map_err(error)
             .map(|acceptor| acceptor.with_all_versions_alpn().with_incoming(incoming))
         else {
+            eprintln!("Failed to create acceptor");
             continue;
         };
         let service = make_service_fn(|_| async { Ok::<_, io::Error>(service_fn(michaeljoy)) });

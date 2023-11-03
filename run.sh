@@ -1,1 +1,1 @@
-cargo run --release > logs.txt
+cargo build --release && sudo ./target/release/michaeljoy > logs.txt
