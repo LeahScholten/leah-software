@@ -6,14 +6,10 @@ body{
     color: rgb(240, 224, 192);
     display: table;
     margin: auto;
-    max-width: 90%;
+    max-width: 100%;
+    width: 900px;
 }
 
 a{
     color: lightblue;
-}
-
-li{
-    margin-top: 11px;
-    margin-bottom: 11px;
 }
