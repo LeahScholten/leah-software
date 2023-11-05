@@ -4,8 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [profile.release]
-debug = true
-#strip = true     # automatically strip symbols from the binary
+strip = true      # automatically strip symbols from the binary
 opt-level = "s"   # optimize for size
 lto = true        # enable link time optimization
 codegen-units = 1 # maximize size reduction optimizations
