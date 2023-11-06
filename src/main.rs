@@ -111,7 +111,7 @@ async fn michaeljoy(
             Ok(content) => {
                 // Set the body to the content of the file, use the accepted status code
                 *response.body_mut() = content.into();
-                *response.status_mut() = StatusCode::ACCEPTED;
+                *response.status_mut() = StatusCode::OK;
             }
             // Otherwise
             Err(e) => {
