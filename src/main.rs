@@ -17,7 +17,7 @@ use hyper::{
     service::{make_service_fn, service_fn},
     Body, Request, Response, Server, StatusCode,
 };
-use hyper_rustls::TlsAcceptor;
+use hyper_rustls::{acceptor::TlsStream, TlsAcceptor};
 use std::{
     fs, io,
     net::{Ipv4Addr, SocketAddr},
@@ -75,7 +75,10 @@ async fn find_path<T: AsyncBufRead + Unpin + Send>(
     path
 }
 
-async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
+async fn michaeljoy(
+    req: Request<Body>,
+    address: SocketAddr,
+) -> Result<Response<Body>, hyper::Error> {
     // Create an empty response
     let mut response = Response::new(Body::empty());
 
@@ -93,7 +96,7 @@ async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> 
 
     // Take the requested path
     let expected_uri = req.uri().path();
-    println!("{now}\n{expected_uri}\n");
+    println!("{now}\n{address}\n{expected_uri}\n");
 
     match find_path(lines, expected_uri).await {
         // If the requested page wasn't found
@@ -159,7 +162,11 @@ async fn main() {
             eprintln!("Failed to create acceptor");
             continue;
         };
-        let service = make_service_fn(|_| async { Ok::<_, io::Error>(service_fn(michaeljoy)) });
+        let service = make_service_fn(|r: &TlsStream| {
+            let c = r.io().unwrap();
+            let address = c.remote_addr();
+            async move { Ok::<_, io::Error>(service_fn(move |req| michaeljoy(req, address))) }
+        });
         let server = Server::builder(acceptor).serve(service);
 
         // Run the future, keep going until an error occurs
