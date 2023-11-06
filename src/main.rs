@@ -25,6 +25,7 @@ use std::{
 use tokio::{
     fs as tokio_fs,
     io::{AsyncBufRead, AsyncBufReadExt},
+    select,
 };
 
 /// Test key and certificate
@@ -129,49 +130,76 @@ async fn michaeljoy(
     Ok(response)
 }
 
+async fn http(req: Request<Body>) -> hyper::Result<Response<Body>> {
+    let mut response = Response::new(Body::empty());
+    *response.status_mut() = StatusCode::PERMANENT_REDIRECT;
+    response.headers_mut().append(
+        "Location",
+        format!(
+            "https://{}/{}",
+            req.uri().host().unwrap_or("127.0.0.1:4430"),
+            req.uri().path()
+        )
+        .parse()
+        .unwrap(),
+    );
+    Ok(response)
+}
+
 #[tokio::main]
 async fn main() {
     let port = 4430;
     let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), port).into();
-
     loop {
-        // Load public certificate
-        let Ok(certs) = load_certs(CERT_KEY.0) else {
-            eprintln!("Failed to load certificates");
-            continue;
+        let https_server = {
+            // Load public certificate
+            let Ok(certs) = load_certs(CERT_KEY.0) else {
+                eprintln!("Failed to load certificates");
+                continue;
+            };
+
+            // Load private key
+            let Ok(key) = load_private_key(CERT_KEY.1) else {
+                eprintln!("Failed to load keys");
+                continue;
+            };
+
+            // Build TLS configuration
+
+            // Create a TCP listener via tokio
+            let Ok(incoming) = AddrIncoming::bind(&address) else {
+                eprintln!("Failed to bind to {address}");
+                continue;
+            };
+            let Ok(acceptor) = TlsAcceptor::builder()
+                .with_single_cert(certs, key)
+                .map_err(error)
+                .map(|acceptor| acceptor.with_all_versions_alpn().with_incoming(incoming))
+            else {
+                eprintln!("Failed to create acceptor");
+                continue;
+            };
+            let service = make_service_fn(|r: &TlsStream| {
+                let c = r.io().unwrap();
+                let address = c.remote_addr();
+                async move { Ok::<_, io::Error>(service_fn(move |req| michaeljoy(req, address))) }
+            });
+            Server::builder(acceptor).serve(service)
         };
 
-        // Load private key
-        let Ok(key) = load_private_key(CERT_KEY.1) else {
-            eprintln!("Failed to load keys");
-            continue;
+        let http_server = {
+            let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), 8080).into();
+            let Ok(incoming) = AddrIncoming::bind(&address) else {
+                eprintln!("Failed to bind http server to {}", address);
+                continue;
+            };
+            let service = make_service_fn(|_| async { Ok::<_, io::Error>(service_fn(http)) });
+            Server::builder(incoming).serve(service)
         };
-
-        // Build TLS configuration
-
-        // Create a TCP listener via tokio
-        let Ok(incoming) = AddrIncoming::bind(&address) else {
-            eprintln!("Failed to bind to {address}");
-            continue;
-        };
-        let Ok(acceptor) = TlsAcceptor::builder()
-            .with_single_cert(certs, key)
-            .map_err(error)
-            .map(|acceptor| acceptor.with_all_versions_alpn().with_incoming(incoming))
-        else {
-            eprintln!("Failed to create acceptor");
-            continue;
-        };
-        let service = make_service_fn(|r: &TlsStream| {
-            let c = r.io().unwrap();
-            let address = c.remote_addr();
-            async move { Ok::<_, io::Error>(service_fn(move |req| michaeljoy(req, address))) }
-        });
-        let server = Server::builder(acceptor).serve(service);
 
         // Run the future, keep going until an error occurs
         eprintln!("Starting to serve on https://{address}");
-        server.await.ok();
+        select! {_ = http_server => {}, _ = https_server => {}};
     }
 }
 
