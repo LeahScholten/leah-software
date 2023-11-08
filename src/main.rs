@@ -17,7 +17,7 @@ use hyper::{
     service::{make_service_fn, service_fn},
     Body, Request, Response, Server, StatusCode,
 };
-use hyper_rustls::{acceptor::TlsStream, TlsAcceptor};
+use hyper_rustls::TlsAcceptor;
 use std::{
     fs, io,
     net::{Ipv4Addr, SocketAddr},
@@ -76,10 +76,7 @@ async fn find_path<T: AsyncBufRead + Unpin + Send>(
     path
 }
 
-async fn michaeljoy(
-    req: Request<Body>,
-    address: SocketAddr,
-) -> Result<Response<Body>, hyper::Error> {
+async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
     // Create an empty response
     let mut response = Response::new(Body::empty());
 
@@ -97,7 +94,7 @@ async fn michaeljoy(
 
     // Take the requested path
     let expected_uri = req.uri().path();
-    println!("{now}\n{address}\n{expected_uri}\n");
+    println!("{now}\n{expected_uri}\n");
 
     match find_path(lines, expected_uri).await {
         // If the requested page wasn't found
@@ -133,16 +130,15 @@ async fn michaeljoy(
 async fn http(req: Request<Body>) -> hyper::Result<Response<Body>> {
     let mut response = Response::new(Body::empty());
     *response.status_mut() = StatusCode::PERMANENT_REDIRECT;
-    response.headers_mut().append(
-        "Location",
-        format!(
-            "https://{}/{}",
-            req.uri().host().unwrap_or("127.0.0.1:4430"),
-            req.uri().path()
-        )
-        .parse()
-        .unwrap(),
-    );
+    if let Ok(header_value) = format!(
+        "https://{}/{}",
+        req.uri().host().unwrap_or("127.0.0.1:4430"),
+        req.uri().path()
+    )
+    .parse()
+    {
+        response.headers_mut().append("Location", header_value);
+    }
     Ok(response)
 }
 
@@ -179,18 +175,15 @@ async fn main() {
                 eprintln!("Failed to create acceptor");
                 continue;
             };
-            let service = make_service_fn(|r: &TlsStream| {
-                let c = r.io().unwrap();
-                let address = c.remote_addr();
-                async move { Ok::<_, io::Error>(service_fn(move |req| michaeljoy(req, address))) }
-            });
+            let service =
+                make_service_fn(|_| async move { Ok::<_, io::Error>(service_fn(michaeljoy)) });
             Server::builder(acceptor).serve(service)
         };
 
-        let http_server = {
+        let http_redirect = {
             let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), 8080).into();
             let Ok(incoming) = AddrIncoming::bind(&address) else {
-                eprintln!("Failed to bind http server to {}", address);
+                eprintln!("Failed to bind http server to {address}");
                 continue;
             };
             let service = make_service_fn(|_| async { Ok::<_, io::Error>(service_fn(http)) });
@@ -199,7 +192,10 @@ async fn main() {
 
         // Run the future, keep going until an error occurs
         eprintln!("Starting to serve on https://{address}");
-        select! {_ = http_server => {}, _ = https_server => {}};
+        #[allow(clippy::redundant_pub_crate)]
+        {
+            select! {_ = http_redirect => (), _ = https_server => ()};
+        }
     }
 }
 
