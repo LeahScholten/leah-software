@@ -27,4 +27,6 @@
 /games/conwaysGameOfLife/windows.zip, src/games/conwaysGameOfLife/windows.zip
 /games/conwaysGameOfLife/linux.zip, src/games/conwaysGameOfLife/linux.zip
 
+/tools/file_filter.zip, src/tools/file_filter.zip
+
 /robots.txt, src/robots.txt
