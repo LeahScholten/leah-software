@@ -6,10 +6,17 @@ const nextYear = new Date(2024, 0, 1, 0, 0, 0, 0);
 const setup = () => {
     let relatie;
 
-    switch(username){
-        case "mama": case "opa": case "oma":
+    username = username[0].toUpperCase() + username.slice(1);
+    console.log(username);
+    switch(username.toLowerCase()){
+        case "opa": case "oma":
             relatie = `mijn ${username}`;
+            username[0] = username[0].toLowerCase();
+            document.getElementById("ending").innerText = "Knuffels,";
             break;
+        case "mama":
+            relatie = `mijn moeder`;
+            username[0] = username[0].toLowerCase();
         case "daisy":
             relatie = "mijn zus";
             break;
@@ -23,27 +30,31 @@ const setup = () => {
             relatie = "mijn oom";
             break;
         case "nicole":
-            relatie = "mijn nicht";
+            relatie = "mijn tante";
             break;
-        case "Els": case "Thom":
+        case "els": case "tom": case "kelly": case "hanneke": case "ruud":
             relatie += "je familie";
             break;
         case "nathalja": case "catharina": case "mike":
-            relatie += "een goede vriend";
+            relatie += "een van mijn beste vrienden";
             break;
+        default:
+            document.body.innerText = "";
+            return false;
     }
 
     document.getElementById("greeting").innerText = `Hallo ${username},`;
     document.getElementById("message").innerHTML = "<p>Als je dit leest, wil ik zeggen dat je een plek in mijn hart hebt.<br/>" +
                   `Dit is omdat je ${relatie} bent.<br/>` +
                   "Daarom wens ik je een fijne kerst en een gelukkig en gezond nieuw jaar.</p>";
+    return true;
 };
 
-const millisecondsToDays = (milliseconds) => Math.floor(milliseconds / 1000 / 3600 / 24);
+const millisecondsToDays = (milliseconds) => Math.ceil(milliseconds / 1000 / 3600 / 24);
 const millisecondsToHMS = (milliseconds) => {
-    let seconds = Math.floor(milliseconds / 1000);
-    let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(minutes / 60);
+    let seconds = Math.ceil(milliseconds / 1000);
+    let minutes = Math.ceil(seconds / 60);
+    let hours = Math.ceil(minutes / 60);
     minutes %= 60;
     seconds %= 60;
     if(hours < 10){
@@ -78,7 +89,9 @@ const loop = () => {
 };
 
 async function main(){
-    setup();
+    if(!setup()){
+        return;
+    }
     while(true){
         loop();
         await new Promise(r => setTimeout(r, 1000));
