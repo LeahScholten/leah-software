@@ -8,6 +8,8 @@
 
 /favicon.ico, src/img/favicon.ico
 /cv_foto.jpeg, src/img/cv_foto.jpeg
+/portfolio/circleOfInfluence.png, src/img/circleOfInfluence.png
+/portfolio/5TeamDysfunctions.png, src/img/5TeamDysfunctions.png
 
 /raspberryPico/7segmentCounter.mp4, src/video/raspberryPico/7segmentCounter.mp4
 /ZUMO32U4/objectTracing.mp4, src/video/ZUMO32U4/objectTracing.mp4
