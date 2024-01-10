@@ -6,8 +6,11 @@ const nextYear = new Date(2024, 0, 1, 0, 0, 0, 0);
 const setup = () => {
     let relatie;
 
-    username = username[0].toUpperCase() + username.slice(1);
-    console.log(username);
+    if(username.length == 0){
+        document.body.innerHTML = "";
+        return false;
+    }
+
     switch(username.toLowerCase()){
         case "opa": case "oma":
             relatie = `mijn ${username}`;
@@ -19,27 +22,42 @@ const setup = () => {
             username[0] = username[0].toLowerCase();
         case "daisy":
             relatie = "mijn zus";
+            username = username[0].toUpperCase() + username.slice(1);
+            break;
+        case "stephen":
+            relatie = "mijn Stephen vader";
+            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "chris":
             relatie = "mijn neef";
+            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "iris":
             relatie = "mijn nicht";
+            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "arjen":
             relatie = "mijn oom";
+            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "nicole":
             relatie = "mijn tante";
+            username = username[0].toUpperCase() + username.slice(1);
             break;
-        case "els": case "tom": case "kelly": case "hanneke": case "ruud":
+        case "els": case "tom": case "kelly": case "hanneke": case "ruud": case "jeroen":
             relatie += "je familie";
+            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "nathalja": case "catharina": case "mike":
             relatie += "een van mijn beste vrienden";
+            username = username[0].toUpperCase() + username.slice(1);
+            break;
+        case "jolinda":
+            relatie += "een moeder van Levy bent";
+            username = username[0].toUpperCase() + username.slice(1);
             break;
         default:
-            document.body.innerText = "";
+            document.body.innerHTML = "";
             return false;
     }
 
