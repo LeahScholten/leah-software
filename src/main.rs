@@ -21,6 +21,7 @@ use hyper_rustls::TlsAcceptor;
 use std::{
     fs, io,
     net::{Ipv4Addr, SocketAddr},
+    time::{Duration, SystemTime},
 };
 use tokio::{
     fs as tokio_fs,
@@ -142,6 +143,23 @@ async fn http(req: Request<Body>) -> hyper::Result<Response<Body>> {
     Ok(response)
 }
 
+async fn wait_for_cert_update() {
+    let start = SystemTime::now();
+    let second = Duration::from_secs(1);
+    loop {
+        tokio::time::sleep(second).await;
+        let Ok(file) = tokio_fs::File::open(CERT_KEY.0).await else {
+            continue;
+        };
+        let Ok(metadata) = file.metadata().await else {
+            continue;
+        };
+        if metadata.modified().is_ok_and(|update| update > start) {
+            break;
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() {
     let port = 4430;
@@ -194,7 +212,7 @@ async fn main() {
         eprintln!("Starting to serve on https://{address}");
         #[allow(clippy::redundant_pub_crate)]
         {
-            select! {_ = http_redirect => (), _ = https_server => ()};
+            select! {_ = http_redirect => (), _ = https_server => (), () = wait_for_cert_update() => ()};
         }
     }
 }
