@@ -31,5 +31,6 @@
 /games/conwaysGameOfLife/linux.zip, src/games/conwaysGameOfLife/linux.zip
 
 /tools/file_filter.zip, src/tools/file_filter.zip
+/tools/clean_rust_projects.zip, src//tools/clean_rust_projects.zip
 
 /robots.txt, src/robots.txt
