@@ -1,8 +1,9 @@
 /, src/html/index.html
 /kerst.html, src/html/kerst.html
-/cv.html, src/html/cv.html
+/cv.html, src/html/cv2.html
 /portfolio.html, src/html/portfolio.html
 /joy.html, src/html/joy.html
+/mood.html, src/html/mood.html
 
 /standard.css, src/css/standard.css
 
@@ -10,6 +11,7 @@
 /cv_foto.jpeg, src/img/cv_foto.jpeg
 /portfolio/circleOfInfluence.png, src/img/circleOfInfluence.png
 /portfolio/5TeamDysfunctions.png, src/img/5TeamDysfunctions.png
+/thermometer.png, src/img/thermometer.png
 
 /raspberryPico/7segmentCounter.mp4, src/video/raspberryPico/7segmentCounter.mp4
 /ZUMO32U4/objectTracing.mp4, src/video/ZUMO32U4/objectTracing.mp4
@@ -24,6 +26,7 @@
 /ID-PD_HBO-I_jobevent+oracle.pdf, src/pdf/ID-PD_HBO-I_jobevent+oracle.pdf
 
 /kerst.js, src/js/kerst.js
+/mood.js, src/js/mood.js
 
 /games/pong/windows.zip, src/games/pong/windows.zip
 /games/pong/linux.zip, src/games/pong/linux.zip

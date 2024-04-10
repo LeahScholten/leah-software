@@ -13,14 +13,19 @@
 #![feature(async_closure)]
 
 use hyper::{
+    body::HttpBody,
+    header::{self, HeaderValue},
     server::conn::AddrIncoming,
     service::{make_service_fn, service_fn},
-    Body, Request, Response, Server, StatusCode,
+    Body, Method, Request, Response, Server, StatusCode,
 };
 use hyper_rustls::TlsAcceptor;
 use std::{
+    fmt::Write as _,
     fs, io,
     net::{Ipv4Addr, SocketAddr},
+    num::ParseFloatError,
+    sync::atomic::{AtomicU8, Ordering},
     time::{Duration, SystemTime},
 };
 use tokio::{
@@ -77,7 +82,40 @@ async fn find_path<T: AsyncBufRead + Unpin + Send>(
     path
 }
 
+async fn generate_temperature_page() -> String {
+    let mut page = "<!DOCTYPE html><html><head><title>temperature</title></head><body>".to_owned();
+    match fs::read_to_string("/sys/class/thermal/thermal_zone0/temp")
+        .map(|temperature| Ok::<f32, ParseFloatError>(temperature.trim().parse::<f32>()? / 1000.0))
+    {
+        Ok(Ok(temperature)) => {
+            write!(&mut page, "Temperature: {temperature} degrees Celsius").unwrap()
+        }
+        Ok(Err(e)) => write!(&mut page, "Failed to parse temperature: {e:?}").unwrap(),
+        Err(e) => write!(&mut page, "Failed to read temperature: {e:?}").unwrap(),
+    }
+    page += "</body></html>";
+    page
+}
+
+fn content_type(file_name: &str) -> &'static str {
+    let file_name = file_name.trim();
+    match &file_name[file_name.len() - 3..] {
+        "tml" => "text/html",
+        "css" => "text/css",
+        "ico" => "image/x-icon",
+        "peg" => "image/jpeg",
+        "png" => "image/png",
+        "mp4" => "video/mp4",
+        "pdf" => "application/pdf",
+        ".js" => "application/javascript",
+        "zip" => "application/zip",
+        "txt" => "text/plain",
+        _ => todo!(),
+    }
+}
+
 async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
+    static MOOD: AtomicU8 = AtomicU8::new(70);
     // Create an empty response
     let mut response = Response::new(Body::empty());
 
@@ -95,22 +133,20 @@ async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> 
 
     // Take the requested path
     let expected_uri = req.uri().path();
-    println!("{now}\n{expected_uri}\n");
+    println!("{now}\n{}\n{expected_uri}\n", req.method());
 
     match find_path(lines, expected_uri).await {
-        // If the requested page wasn't found
-        None => {
-            // Send a 404 page with the NOT FOUND status code
-            *response.body_mut() = "<h1>404 page not found!</h1>".into();
-            *response.status_mut() = StatusCode::NOT_FOUND;
-        }
         // Otherwise, try to read the file
-        Some(path) => match tokio_fs::read(path).await {
+        Some(path) => match tokio_fs::read(&path).await {
             // If the file was read successfully
             Ok(content) => {
                 // Set the body to the content of the file, use the accepted status code
                 *response.body_mut() = content.into();
                 *response.status_mut() = StatusCode::OK;
+                response.headers_mut().append(
+                    header::CONTENT_TYPE,
+                    HeaderValue::from_str(content_type(&path)).unwrap(),
+                );
             }
             // Otherwise
             Err(e) => {
@@ -121,8 +157,50 @@ async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> 
                         + &e.to_string())
                         .into();
                 *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
+                response.headers_mut().append(
+                    header::CONTENT_TYPE,
+                    HeaderValue::from_str(content_type(".html")).unwrap(),
+                );
             }
         },
+
+        None if expected_uri == "/temperature.html" => {
+            *response.body_mut() = generate_temperature_page().await.into();
+            *response.status_mut() = StatusCode::OK;
+            response.headers_mut().append(
+                header::CONTENT_TYPE,
+                HeaderValue::from_str(content_type("temperature.html")).unwrap(),
+            );
+        }
+
+        None if expected_uri == "/mood" => match *req.method() {
+            Method::GET => {
+                *response.body_mut() = MOOD.load(Ordering::Relaxed).to_string().into();
+            }
+            Method::POST => {
+                let data = req.into_body().collect().await.map(|body| {
+                    String::from_utf8(body.to_bytes().into_iter().collect())
+                        .map(|body| body.trim().parse::<u8>())
+                });
+                if let Ok(Ok(Ok(value))) = data {
+                    if value <= 100 {
+                        MOOD.store(value, Ordering::Relaxed);
+                    }
+                }
+            }
+            _ => {}
+        },
+
+        // If the requested page wasn't found
+        None => {
+            // Send a 404 page with the NOT FOUND status code
+            *response.body_mut() = "<h1>404 page not found!</h1>".into();
+            *response.status_mut() = StatusCode::NOT_FOUND;
+            response.headers_mut().append(
+                header::CONTENT_TYPE,
+                HeaderValue::from_str(content_type("error.html")).unwrap(),
+            );
+        }
     }
 
     Ok(response)
