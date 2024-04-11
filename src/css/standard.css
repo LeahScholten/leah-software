@@ -1,9 +1,9 @@
 body{
     background-color: rgb(16, 32, 64);
+    color: rgb(240, 224, 192);
 }
 
 #content{
-    color: rgb(240, 224, 192);
     display: table;
     margin: auto;
     max-width: 50%;
