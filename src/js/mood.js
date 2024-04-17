@@ -6,7 +6,7 @@ function preload(){
 
 function setup(){
     thermometer.resize(512, 0);
-    createCanvas(thermometer.width, thermometer.height);
+    createCanvas(thermometer.width, thermometer.height).parent("thermometer");
     image(thermometer, 0, 0);
     // Min 550
     // Max 50

@@ -10,124 +10,226 @@
             background-color: white;
         }
         #content{
-            display: table;
             margin: auto;
+            width: 900px;
             max-width: 100%;
-            width: 700px;
         }
-        #nav, #nav tr, #nav td{
-            border: 1px solid;
+        #personalia{
+            width: 30%;
+            margin: auto;
+            background-color: rgb(150,141,133);
+            vertical-align: top;
         }
-        h1, h2, h3, h4{
-            margin-bottom: 0px;
-            padding-bottom: 0px;
+        #name{
+            text-align: center;
+        }
+        #photo{
+            display: table;
+            border-radius: 100%;
+            max-width: 75%;
+            margin: auto;
+        }
+        .pictogram{
+            width: 50px;
+        }
+        #experience{
+            width: 70%;
+            margin: auto;
+            vertical-align: top;
+        }
+        h1, h2, h3{
+            margin: 0px;
+            padding: 0px;
             line-height: 1;
         }
-        p{
-            margin-top: 0px;
-            padding-top: 0px;
-        }
-        ul{
-            margin-top: 0px;
-            padding-top: 0px;
+        #date{
+            vertical-align: top;
         }
         </style>
     </head>
     <body>
-        <div id="content">
-            <h1>Curriculum Vitae | Michael Scholten</h1>
-            <hr>
-            <p>Nieuwersluisstraat 13, 2546RP Den Haag | +31637006562 | michael-scholten@hotmail.nl<br/>
-                Geboren op 23 juli 2000 in Den Haag, Nederland.
-            </p>
-
-            <h2>Foto</h2>
-            <img src="/cv_foto.jpeg" style="width: 50%;" alt="foto van mij">
-            <h2>Over mij</h2>
-            <p>Ik ben een autistische Software Engineer.
-                Als kind wilde ik graag games ontwikkelen,een website (https://michaeljoy.nl) maken en robots bouwen.
-                In 2015/2016 leerde ik echter pas voor het eerst programmeren.
-                Sindsdien heb ik al die doelen bereikt en heb ik besloten om mij vooral te richten op systems engineering (OS, Embedded, CLI).
-                Door mijn autisme ben ik stil en graag alleen, maar ben ik ook erg gedreven als ik doe wat ik leuk vind.
-                Helaas ben ik door mijn autisme wel erg gevoelig voor harde geluiden.
-            </p>
-            <h3>Sociale media</h3>
-            <ul>
-                <li>LinkedIn: https://www.linkedin.com/in/michael-scholten2000/</li>
-                <li>GitHub: https://github.com/41Leahcim</li>
-            </ul>
-
-            <h2>Opleiding</h2>
-            <h3>HBO BACHELOR | 2020 - HEDEN | HAAGSE HOGESCHOOL</h3>
-            <h4>Opleiding: HBO-ICT</h4>
-            <ol>
-                <li>Differentiatie: NSE (Network and System Engineering)</li>
-                <li>Minor: Game Development</li>
-                <li>Afstudeerprogramma: Innovative Development</li>
-            </ol>
-            <h3>MBO NIVEAU 4 | 2017 - 2020 | ROC MONDRIAAN</h3>
-            <h4>Opleiding: Bedrijfsadministrateur</h4>
-            <h3>VMBO TL/MAVO | 2013 - 2017 | COLLEGE ST. PAUL</h3>
-            <h4>Richting: Economie</h4>
-
-            <h2>Vaardigheden en talenten</h2>
-            <h3>PROGRAMMEREN</h3>
-            <ul>
-                <li>Rust (2022): expert</li>
-                <li>C (2019): expert</li>
-                <li>C++ (2019): expert</li>
-                <li>Python (2019): ervaren</li>
-                <li>C# (2019): ervaren</li>
-                <li>JavaScript (2019): ervaren</li>
-                <li>CSS (2019): beginner</li>
-                <li>HTML (2019): ervaren</li>
-                <li>Assembly
+        <table id="content">
+            <tr>
+                <td id="personalia">
+                    <h1>Curriculum vitae</h1>
+                    <br>
+                    <h2 id="name">Michael Scholten</h2>
+                    <img src="/cv_foto.jpeg" id="photo">
+                    <h2>Personalia</h2>
+                    <table>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="https://static.vecteezy.com/system/resources/previews/000/576/246/original/vector-sign-of-people-icon.jpg"></td>
+                            <td>Naam:</td>
+                        </tr>
+                        <tr>
+                            <td>Michael Scholten</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="http://2013.igem.org/wiki/images/6/63/Casa.png"></td>
+                            <td>Adres:</td>
+                        </tr>
+                        <tr>
+                            <td>Nieuwersluisstraat 13<br>2546RP Den Haag</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Phone_icon_rotated.svg/427px-Phone_icon_rotated.svg.png"></td>
+                            <td>Telefoonnummer:</td>
+                        </tr>
+                        <tr>
+                            <td>+31(0)637006562</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="https://tse2.mm.bing.net/th?id=OIP.t8_rPlv6AcVvNO_R3DZZjAHaHa&pid=Api"></td>
+                            <td>Geboortedatum:</td>
+                        </tr>
+                        <tr>
+                            <td>23-07-2000</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="http://2018.igem.org/wiki/images/0/09/Icon_location_purple.svg"></td>
+                            <td>Geboorteplaats</td>
+                        </tr>
+                        <tr>
+                            <td>Den Haag</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="https://familyinequality.files.wordpress.com/2010/03/toilet-gender.jpg?w=231&h=245"></td>
+                            <td>Geslacht:</td>
+                        </tr>
+                        <tr>
+                            <td>Man</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"></td>
+                            <td>LinkedIn</td>
+                        </tr>
+                        <tr>
+                            <td>https://www.linkedin.com/in/michael-scholten2000/</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="https://tse1.mm.bing.net/th?id=OIP.AlW_LNbkLC_b4uGJ5BiSnwAAAA&pid=Api"></td>
+                            <td>GitHub</td>
+                        </tr>
+                        <tr>
+                            <td>https://github.com/41Leahcim</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><img class="pictogram" src="http://3.bp.blogspot.com/_N7UXmm8rPV8/TSS6e9yxHlI/AAAAAAAABbE/z1BzKpSCl4Y/s1600/email.jpg"></td>
+                            <td>Email:</td>
+                        </tr>
+                        <tr>
+                            <td>michael-scholten@hotmail.nl</td>
+                        </tr>
+                    </table>
+                    <h2>Interesses</h2>
                     <ul>
-                        <li>Arm (2020): beginner</li>
-                        <li>Masm (2020): beginner</li>
-                        <li>Nasm (2022): beginner</li>
+                        <li>Programmeren</li>
+                        <li>Gamen</li>
+                        <li>YouTube</li>
+                        <li>Fietsen</li>
                     </ul>
-                </li>
-            </ul>
-            <h3>BESTURINGSYSTEMEN</h3>
-            <ul>
-                <li>Linux: ervaren</li>
-                <li>Windows: ervaren</li>
-            </ul>
-            <h3>Rijbewijs</h3>
-            <ul>
-                <li>Rijbewijs B (schakelauto zonder aanhangwagen)</li>
-            </ul>
-            <h3>Talen</h3>
-            <ul>
-                <li>Nederlands: moedertaal</li>
-                <li>Engels: Gevorderd</li>
-            </ul>
-
-            <h2>Werkervaring</h2>
-            <h3>EMBEDDED SOFTWARE DEVELOPER | LECTORAAT SMART SENSOR SYSTEMS (HAAGSE HOGESCHOOL) | september 2022 - januari 2023</h3>
-            <ul>
-                <li>Software installatie</li>
-                <li>Communicatie</li>
-                <li>Programmeren</li>
-                <li>GPS</li>
-                <li>Testen</li>
-                <li>UML</li>
-            </ul>
-            <h3>STUDENT | STUDENT AAN HUIS | 12 juli 2021 - februari 2022</h3>
-            <ul>
-                <li>Android</li>
-                <li>Windows</li>
-                <li>Software installeren</li>
-                <li>Computer instellen</li>
-            </ul>
-
-            <h2>Hobby's</h2>
-            <ul>
-                <li>Programmeren</li>
-                <li>YouTube kijken</li>
-                <li>Fietsen</li>
-            </ul>
-        </div>
+                    <h2>Talen</h2>
+                    <ul>
+                        <li>Nederlands: moedertaal</li>
+                        <li>Engels: gevorderd</li>
+                    </ul>
+                    <h2>Rijbewijzen</h2>
+                    <ul>
+                        <li>AM (22-09-2021)</li>
+                        <li>B (22-09-2021)</li>
+                    </ul>
+                </td>
+                <td id="experience">
+                    <h2>Wie ik ben:</h2>
+                    <p style="margin-top: 0px;">Ik ben een autistische Software Engineer.
+                        Als kind wilde ik graag games ontwikkelen,een website maken en robots bouwen.
+                        Toen ik 15 was kwam ik een ICT docent tegen die mij vertelde hoe ik het zelf kon leren.
+                        Eerst HTML en Python, daarna Java, Javascript, C#, C en C++.<br>
+                        Tijdens mijn studie heb ik ook nog de Function Block Diagram (FBD) en Structured Control Language (SCL) PLC programmeertalen geleerd om te gebruiken in TIA Portal, om PLC's aan te sturen.<br>
+                        Ik heb zelf tijdens mijn studie ook nog Zig, Rust en V geleerd.
+                        Sinds 2015 heb ik al mijn doelen bereikt en heb ik besloten om mij vooral te richten op systems engineering (OS, firmware, Embedded, CLI).<br>
+                        Door mijn autisme ben ik stil en graag alleen, maar ben ik ook erg gedreven als ik doe wat ik leuk vind.
+                        In een groepsgroote van maximaal 6 en met een duidelijk overzicht waar iedereen aan werkt, kan ik ook prima samenwerken.
+                        Helaas ben ik door mijn autisme wel erg gevoelig voor harde geluiden.
+                    </p>
+                    <hr>
+                    <h2>Opleidingen:</h2>
+                    <table>
+                        <tr>
+                            <td><h3>HBO-ICT</h3>
+                                (De Haagse Hogeschool, Delft)<br>
+                                Behaalde vakken: Design & Programming in C, Embedded Programming, Project Software, Cyber Security, Logic & Digital Systems, PLC Design & Programming, Routing & Switching, Project Computernetworks, Project System Development, Project Automation, Introduction to Object Oriented Programming, Object Oriented Modelling, Industrial Communication & Control Systems, Discrete Mathematics Advanced Routing, Software Architecture & Design Patterns, Object Oriented Programming, IT Systems & IT Service Management, Image Processing & Computer Vision, Research on Networks & Systems, Research Trends in Technology, Stage, Game Development, Innovation & ICT
+                            </td>
+                            <td id="date"><strong>September 2020 - heden</strong></td>
+                        </tr>
+                        <tr>
+                            <td><h3>Bedrijfsadministrateur - MBO 4</h3>
+                                (Roc Mondriaan, Delft)
+                            </td>
+                            <td id="date"><strong>september 2017 - juli 2020</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <hr>
+                                <h2>Werkervaring</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><h3>Lectoraat Smart Sensor Systems</h3>
+                                (Embedded software engineer, Haagse Hogeschool Delft)<br>
+                                <ul>
+                                    <li>Software installeren/updaten</li>
+                                    <li>C code schrijven</li>
+                                    <li>Testen in code en met een waveform generator en oscilloscoop</li>
+                                    <li>Presenteren</li>
+                                    <li>Componenten vergelijken en bestellen</li>
+                                    <li>Hardware onderzoeken en aanpassen</li>
+                                    <li>Ontwerpen met UML</li>
+                                </ul>
+                            </td>
+                            <td id="date"><strong>september 2022 - januari 2023</strong></td>
+                        </tr>
+                        <tr>
+                            <td><h3>Student aan Huis</h3>
+                                (Student)
+                                <ul>
+                                    <li>Android</li>
+                                    <li>Windows</li>
+                                    <li>Softare installeren</li>
+                                    <li>Computer instellen</li>
+                                </ul>
+                            </td>
+                            <td id="date"><strong>juli 2021 - februari 2022</strong></td>
+                        </tr>
+                    </table>
+                    <h2>Ik heb ervaring met</h2>
+                    <img class="pictogram" src="http://img.linuxfr.org/img/687474703a2f2f7777772e727573742d6c616e672e6f72672f6c6f676f732f727573742d6c6f676f2d323536783235362d626c6b2e706e67/rust-logo-256x256-blk.png">
+                    <img class="pictogram" src="https://www.britefish.net/wp-content/uploads/2019/07/logo-c-1.png">
+                    <img class="pictogram" src="https://codefinance.training/wp-content/uploads/2021/06/c-plus-plus-logo.png">
+                    <img class="pictogram" src="https://www.c3d2.de/images/news/python-lang.png">
+                    <img class="pictogram" src="https://img1.daumcdn.net/thumb/R750x0/?scode=mtistory2&fname=https:%2F%2Fblog.kakaocdn.net%2Fdn%2FbGjJnI%2FbtsC4dApRz2%2FDzjLrEK1RGsfmfMELrm4G0%2Fimg.png">
+                    <img class="pictogram" src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Javascript_Logo.png">
+                    <img class="pictogram" src="https://ugeek.github.io/blog/images-blog/git.png">
+                    <img class="pictogram" src="https://i.pinimg.com/originals/24/42/f8/2442f8e6dbd772f0cf1dad8d803399bc.png">
+                    <img class="pictogram" src="https://weibeld.net/assets/icons/java.png">
+                    <img class="pictogram" src="https://tse2.mm.bing.net/th?id=OIP.Jm1j_6Nfqk9BscqEKzysSwAAAA&pid=Api">
+                    <img class="pictogram" src="https://tse4.mm.bing.net/th?id=OIP.V0JtwD4jAuAMaR_KiWQ4SwAAAA&pid=Api">
+                    <img class="pictogram" src="https://tse3.mm.bing.net/th?id=OIP.DZnbmoOT_Dwp0kdWxKq-oAAAAA&pid=Api">
+                    <img class="pictogram" src="https://tse2.mm.bing.net/th?id=OIP.oIqdwQO6VaY1DJD-AxXF7gHaJW&pid=Api">
+                    <img class="pictogram" src="https://tse1.mm.bing.net/th?id=OIP.xSt53Mkt7o4KKPJ5u29qRQAAAA&pid=Api">
+                    <img class="pictogram" src="https://tse4.mm.bing.net/th?id=OIP.JYC7p0wmFvztSOuemRD7gQHaHa&pid=Api">
+                    <img class="pictogram" src="https://tse2.mm.bing.net/th?id=OIP.W1Lrei7EiL4AXTZqQY78PAHaHa&pid=Api">
+                    <img class="pictogram" src="https://tse2.mm.bing.net/th?id=OIP.DLnIZA1ynn8fjwg_1jPH9gHaD6&pid=Api">
+                    <img class="pictogram" src="https://tse1.mm.bing.net/th?id=OIP.Ryqm9C2_Upqi2S8Zgl_-lwHaF7&pid=Api">
+                    <img class="pictogram" src="https://tse4.mm.bing.net/th?id=OIP.15tKRimK08oa_4G9NS3sowHaGg&pid=Api">
+                    <img class="pictogram" src="https://tse3.mm.bing.net/th?id=OIP.lVXIQrBKL9ukJQ5lSly_RwAAAA&pid=Api">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    
+                </td>
+            </tr>
+        </table>
     </body>
 </html>
