@@ -1,11 +1,12 @@
 /, src/html/index.html
-/kerst.html, src/html/kerst.html
-/cv.html, src/html/cv.html
-/portfolio.html, src/html/portfolio.html
-/joy.html, src/html/joy.html
+/kerst, src/html/kerst.html
+/cv, src/html/cv.html
+/portfolio, src/html/portfolio.html
+/joy, src/html/joy.html
 /mood.html, src/html/mood.html
+/birthday, src/html/birthday.html
 
-/standard.css, src/css/standard.css
+/standard, src/css/standard.css
 
 /favicon.ico, src/img/favicon.ico
 /cv_foto.jpeg, src/img/cv_foto.jpeg
@@ -25,8 +26,8 @@
 /cv.pdf, src/pdf/cv.pdf
 /ID-PD_HBO-I_jobevent+oracle.pdf, src/pdf/ID-PD_HBO-I_jobevent+oracle.pdf
 
-/kerst.js, src/js/kerst.js
-/mood.js, src/js/mood.js
+/kerst_bericht, src/js/kerst.js
+/mood_thermometer, src/js/mood.js
 
 /games/pong/windows.zip, src/games/pong/windows.zip
 /games/pong/linux.zip, src/games/pong/linux.zip
