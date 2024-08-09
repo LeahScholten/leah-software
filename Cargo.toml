@@ -11,9 +11,13 @@ codegen-units = 1 # maximize size reduction optimizations
 panic = "abort"   # abort instead of unwinding the code on panic
 
 [dependencies]
+bytes = "1.7.1"
 chrono = "0.4.31"
+http-body-util = "0.1.2"
 hyper = {version = "1.4", features = ["full"]}
-hyper-rustls = "0.27"
+hyper-tls = "0.6"
+hyper-util = { version = "0.1.7", features = ["full"] }
 rustls = { version = "0.23", features = ["tls12"] }
-rustls-pemfile = "2"
+rustls-pemfile = "2.1.3"
 tokio = {version = "1", features = ["full"]}
+tokio-rustls = "0.26.0"

@@ -12,27 +12,40 @@
 #![warn(clippy::pedantic, clippy::nursery)]
 #![feature(async_closure)]
 
+use std::io;
+use std::net::SocketAddr;
+use std::sync::Arc;
+
+use bytes::Bytes;
+use http_body_util::BodyExt;
+use http_body_util::Full;
+use hyper::server::conn::http1;
+use hyper::service::service_fn;
 use hyper::{
-    body::HttpBody,
+    body::Body,
     header::{self, HeaderValue},
-    server::conn::AddrIncoming,
-    service::{make_service_fn, service_fn},
-    Body, Method, Request, Response, Server, StatusCode,
+    Method, StatusCode,
 };
-use hyper_rustls::TlsAcceptor;
+use hyper::{Request, Response};
+use hyper_util::rt::TokioExecutor;
+use hyper_util::rt::{TokioIo, TokioTimer};
+use hyper_util::server::conn::auto::Builder;
+use rustls::pki_types::CertificateDer;
+use rustls::pki_types::PrivateKeyDer;
+use rustls::ServerConfig;
 use std::{
     fmt::Write as _,
-    fs, io,
-    net::{Ipv4Addr, SocketAddr},
+    fs,
+    net::Ipv4Addr,
     num::ParseFloatError,
     sync::atomic::{AtomicU8, Ordering},
-    time::{Duration, SystemTime},
 };
+use tokio::net::TcpListener;
 use tokio::{
     fs as tokio_fs,
     io::{AsyncBufRead, AsyncBufReadExt},
-    select,
 };
+use tokio_rustls::TlsAcceptor;
 
 /// Test key and certificate
 #[cfg(target_arch = "x86_64")]
@@ -46,10 +59,6 @@ const CERT_KEY: (&str, &str) = (
     "/etc/letsencrypt/live/michaeljoy.nl/fullchain.pem",
     "/etc/letsencrypt/live/michaeljoy.nl/privkey.pem",
 );
-
-fn error(err: impl std::fmt::Display) -> io::Error {
-    io::Error::new(io::ErrorKind::Other, err.to_string())
-}
 
 async fn find_path<T: AsyncBufRead + Unpin + Send>(
     mut lines: tokio::io::Lines<T>,
@@ -82,13 +91,13 @@ async fn find_path<T: AsyncBufRead + Unpin + Send>(
     path
 }
 
-async fn generate_temperature_page() -> String {
+fn generate_temperature_page() -> String {
     let mut page = "<!DOCTYPE html><html><head><title>temperature</title></head><body>".to_owned();
     match fs::read_to_string("/sys/class/thermal/thermal_zone0/temp")
         .map(|temperature| Ok::<f32, ParseFloatError>(temperature.trim().parse::<f32>()? / 1000.0))
     {
         Ok(Ok(temperature)) => {
-            write!(&mut page, "Temperature: {temperature} degrees Celsius").unwrap()
+            write!(&mut page, "Temperature: {temperature} degrees Celsius").unwrap();
         }
         Ok(Err(e)) => write!(&mut page, "Failed to parse temperature: {e:?}").unwrap(),
         Err(e) => write!(&mut page, "Failed to read temperature: {e:?}").unwrap(),
@@ -114,10 +123,15 @@ fn content_type(file_name: &str) -> &'static str {
     }
 }
 
-async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
+async fn michaeljoy<Req: Body + Send>(
+    req: Request<Req>,
+) -> Result<Response<Full<Bytes>>, hyper::Error>
+where
+    Req::Data: Send,
+{
     static MOOD: AtomicU8 = AtomicU8::new(70);
     // Create an empty response
-    let mut response = Response::new(Body::empty());
+    let mut response = Response::new(Full::new(Bytes::new()));
 
     // Try to open the paths file, return an internal server error on failure
     let Ok(paths_file) = tokio_fs::File::open("files.csv").await else {
@@ -135,6 +149,7 @@ async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> 
     let expected_uri = req.uri().path();
     println!("{now}\n{}\n{expected_uri}\n", req.method());
 
+    #[allow(clippy::unwrap_used)]
     match find_path(lines, expected_uri).await {
         // Otherwise, try to read the file
         Some(path) => match tokio_fs::read(&path).await {
@@ -165,7 +180,7 @@ async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> 
         },
 
         None if expected_uri == "/temperature.html" => {
-            *response.body_mut() = generate_temperature_page().await.into();
+            *response.body_mut() = generate_temperature_page().into();
             *response.status_mut() = StatusCode::OK;
             response.headers_mut().append(
                 header::CONTENT_TYPE,
@@ -206,22 +221,7 @@ async fn michaeljoy(req: Request<Body>) -> Result<Response<Body>, hyper::Error> 
     Ok(response)
 }
 
-async fn http(req: Request<Body>) -> hyper::Result<Response<Body>> {
-    let mut response = Response::new(Body::empty());
-    *response.status_mut() = StatusCode::PERMANENT_REDIRECT;
-    if let Ok(header_value) = format!(
-        "https://{}/{}",
-        req.uri().host().unwrap_or("127.0.0.1:4430"),
-        req.uri().path()
-    )
-    .parse()
-    {
-        response.headers_mut().append("Location", header_value);
-    }
-    Ok(response)
-}
-
-async fn wait_for_cert_update() {
+/*async fn wait_for_cert_update() {
     let start = SystemTime::now();
     let second = Duration::from_secs(1);
     loop {
@@ -236,47 +236,87 @@ async fn wait_for_cert_update() {
             break;
         }
     }
-}
+}*/
 
 #[tokio::main]
 async fn main() {
     let port = 4430;
     let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), port).into();
+    #[allow(clippy::unwrap_used)]
+    let listener = TcpListener::bind(address).await.unwrap();
     loop {
-        let https_server = {
-            // Load public certificate
-            let Ok(certs) = load_certs(CERT_KEY.0) else {
-                eprintln!("Failed to load certificates");
-                continue;
-            };
+        let Ok((tcp, _)) = listener.accept().await else {
+            continue;
+        };
+        let io = TokioIo::new(tcp);
+        tokio::spawn(async move {
+            if let Err(err) = http1::Builder::new()
+                .timer(TokioTimer::new())
+                .serve_connection(io, service_fn(michaeljoy))
+                .await
+            {
+                println!("Error serving connection: {err:?}");
+            }
+        });
 
-            // Load private key
-            let Ok(key) = load_private_key(CERT_KEY.1) else {
-                eprintln!("Failed to load keys");
-                continue;
-            };
-
-            // Build TLS configuration
-
-            // Create a TCP listener via tokio
-            let Ok(incoming) = AddrIncoming::bind(&address) else {
-                eprintln!("Failed to bind to {address}");
-                continue;
-            };
-            let Ok(acceptor) = TlsAcceptor::builder()
-                .with_single_cert(certs, key)
-                .map_err(error)
-                .map(|acceptor| acceptor.with_all_versions_alpn().with_incoming(incoming))
-            else {
-                eprintln!("Failed to create acceptor");
-                continue;
-            };
-            let service =
-                make_service_fn(|_| async move { Ok::<_, io::Error>(service_fn(michaeljoy)) });
-            Server::builder(acceptor).serve(service)
+        // Load public certificate
+        let Ok(certs) = load_certs(CERT_KEY.0) else {
+            eprintln!("Failed to load certificates");
+            continue;
         };
 
-        let http_redirect = {
+        // Load private key
+        let Ok(key) = load_private_key(CERT_KEY.1) else {
+            eprintln!("Failed to load keys");
+            continue;
+        };
+
+        // Build TLS configuration
+
+        // Create a TCP listener via tokio
+        let Ok(incoming) = TcpListener::bind(&address).await else {
+            eprintln!("Failed to bind to {address}");
+            continue;
+        };
+        let Ok(server_config) = ServerConfig::builder()
+            .with_no_client_auth()
+            .with_single_cert(certs, key)
+            .map(|mut acceptor| {
+                acceptor.alpn_protocols =
+                    vec![b"h2".to_vec(), b"http/1.1".to_vec(), b"http/1.0".to_vec()];
+                acceptor
+            })
+        else {
+            eprintln!("Failed to create acceptor");
+            continue;
+        };
+
+        let acceptor = TlsAcceptor::from(Arc::new(server_config));
+        let service = service_fn(michaeljoy);
+
+        loop {
+            let Ok((tcp_stream, _remote_address)) = incoming.accept().await else {
+                continue;
+            };
+            let tls_acceptor = acceptor.clone();
+            tokio::spawn(async move {
+                let tls_stream = match tls_acceptor.accept(tcp_stream).await {
+                    Ok(tls_stream) => tls_stream,
+                    Err(err) => {
+                        eprintln!("Failed to perform tls handshake: {err:?}");
+                        return;
+                    }
+                };
+                if let Err(err) = Builder::new(TokioExecutor::new())
+                    .serve_connection(TokioIo::new(tls_stream), service)
+                    .await
+                {
+                    eprintln!("Failed to serve connection: {err:#}");
+                }
+            });
+        }
+
+        /*let http_redirect = {
             let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), 8080).into();
             let Ok(incoming) = AddrIncoming::bind(&address) else {
                 eprintln!("Failed to bind http server to {address}");
@@ -291,37 +331,27 @@ async fn main() {
         #[allow(clippy::redundant_pub_crate)]
         {
             select! {_ = http_redirect => (), _ = https_server => (), () = wait_for_cert_update() => ()};
-        }
+        }*/
     }
 }
 
 /// Load public certificate from file
-fn load_certs(filename: &str) -> io::Result<Vec<rustls::Certificate>> {
-    // Open certificate file
-    let certificate =
-        fs::File::open(filename).map_err(|e| error(format!("Failed to open {filename}:{e}")))?;
-    let mut reader = io::BufReader::new(certificate);
+fn load_certs(filename: &str) -> io::Result<Vec<CertificateDer<'static>>> {
+    // Open certificate file.
+    let certfile = fs::File::open(filename)?;
+    let mut reader = io::BufReader::new(certfile);
 
-    // Load and return certificate
-    let certs =
-        rustls_pemfile::certs(&mut reader).map_err(|_| error("Failed to load certificate"))?;
-
-    Ok(certs.into_iter().map(rustls::Certificate).collect())
+    // Load and return certificate.
+    rustls_pemfile::certs(&mut reader).collect()
 }
 
 /// Load private key from file
-fn load_private_key(filename: &str) -> io::Result<rustls::PrivateKey> {
-    // Open keyfile
-    let keyfile =
-        fs::File::open(filename).map_err(|e| error(format!("Failed to open {filename}: {e}")))?;
+#[allow(clippy::unwrap_used)]
+fn load_private_key(filename: &str) -> io::Result<PrivateKeyDer<'static>> {
+    // Open keyfile.
+    let keyfile = fs::File::open(filename)?;
     let mut reader = io::BufReader::new(keyfile);
 
-    // Load and return a single private key
-    let keys = rustls_pemfile::pkcs8_private_keys(&mut reader)
-        .map_err(|_| error("Failed to load private key"))?;
-    if keys.is_empty() {
-        return Err(error("Expected atleast 1 private key"));
-    }
-
-    Ok(rustls::PrivateKey(keys[0].clone()))
+    // Load and return a single private key.
+    rustls_pemfile::private_key(&mut reader).map(|key| key.unwrap())
 }
