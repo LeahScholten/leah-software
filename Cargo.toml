@@ -12,8 +12,8 @@ panic = "abort"   # abort instead of unwinding the code on panic
 
 [dependencies]
 chrono = "0.4.31"
-hyper = {version = "0.14", features = ["full"]}
-hyper-rustls = "0.24.2"
-rustls = { version = "0.21.5", features = ["tls12"] }
-rustls-pemfile = "1.0"
+hyper = {version = "1.4", features = ["full"]}
+hyper-rustls = "0.27"
+rustls = { version = "0.23", features = ["tls12"] }
+rustls-pemfile = "2"
 tokio = {version = "1", features = ["full"]}
