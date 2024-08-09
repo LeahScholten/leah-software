@@ -15,24 +15,24 @@
 use std::io;
 use std::net::SocketAddr;
 use std::sync::Arc;
+use std::time::SystemTime;
 
-use bytes::Bytes;
-use http_body_util::BodyExt;
-use http_body_util::Full;
-use hyper::server::conn::http1;
-use hyper::service::service_fn;
+use http_body_util::{BodyExt, Full};
 use hyper::{
-    body::Body,
+    body::{Body, Bytes},
     header::{self, HeaderValue},
-    Method, StatusCode,
+    server::conn::http1,
+    service::service_fn,
+    Method, Request, Response, StatusCode,
 };
-use hyper::{Request, Response};
-use hyper_util::rt::TokioExecutor;
-use hyper_util::rt::{TokioIo, TokioTimer};
-use hyper_util::server::conn::auto::Builder;
-use rustls::pki_types::CertificateDer;
-use rustls::pki_types::PrivateKeyDer;
-use rustls::ServerConfig;
+use hyper_util::{
+    rt::{TokioExecutor, TokioIo, TokioTimer},
+    server::conn::auto::Builder,
+};
+use rustls::{
+    pki_types::{CertificateDer, PrivateKeyDer},
+    ServerConfig,
+};
 use std::{
     fmt::Write as _,
     fs,
@@ -40,10 +40,10 @@ use std::{
     num::ParseFloatError,
     sync::atomic::{AtomicU8, Ordering},
 };
-use tokio::net::TcpListener;
 use tokio::{
     fs as tokio_fs,
     io::{AsyncBufRead, AsyncBufReadExt},
+    net::TcpListener,
 };
 use tokio_rustls::TlsAcceptor;
 
@@ -238,6 +238,17 @@ where
     }
 }*/
 
+async fn last_modification_time() -> Option<SystemTime> {
+    tokio_fs::File::open(CERT_KEY.0)
+        .await
+        .ok()?
+        .metadata()
+        .await
+        .ok()?
+        .modified()
+        .ok()
+}
+
 #[tokio::main]
 async fn main() {
     let port = 4430;
@@ -294,6 +305,10 @@ async fn main() {
         let acceptor = TlsAcceptor::from(Arc::new(server_config));
         let service = service_fn(michaeljoy);
 
+        let Some(used_update) = last_modification_time().await else {
+            continue;
+        };
+
         loop {
             let Ok((tcp_stream, _remote_address)) = incoming.accept().await else {
                 continue;
@@ -314,24 +329,15 @@ async fn main() {
                     eprintln!("Failed to serve connection: {err:#}");
                 }
             });
-        }
 
-        /*let http_redirect = {
-            let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), 8080).into();
-            let Ok(incoming) = AddrIncoming::bind(&address) else {
-                eprintln!("Failed to bind http server to {address}");
+            let Some(last_update) = last_modification_time().await else {
                 continue;
             };
-            let service = make_service_fn(|_| async { Ok::<_, io::Error>(service_fn(http)) });
-            Server::builder(incoming).serve(service)
-        };
 
-        // Run the future, keep going until an error occurs
-        eprintln!("Starting to serve on https://{address}");
-        #[allow(clippy::redundant_pub_crate)]
-        {
-            select! {_ = http_redirect => (), _ = https_server => (), () = wait_for_cert_update() => ()};
-        }*/
+            if last_update > used_update {
+                break;
+            }
+        }
     }
 }
 
