@@ -21,12 +21,11 @@ use http_body_util::{BodyExt, Full};
 use hyper::{
     body::{Body, Bytes},
     header::{self, HeaderValue},
-    server::conn::http1,
     service::service_fn,
     Method, Request, Response, StatusCode,
 };
 use hyper_util::{
-    rt::{TokioExecutor, TokioIo, TokioTimer},
+    rt::{TokioExecutor, TokioIo},
     server::conn::auto::Builder,
 };
 use rustls::{
@@ -254,13 +253,9 @@ async fn main() {
     let port = 4430;
     let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), port).into();
     #[allow(clippy::unwrap_used)]
-    let listener = TcpListener::bind(address).await.unwrap();
+    let incoming = TcpListener::bind(address).await.unwrap();
     loop {
-        let Ok((tcp, _)) = listener.accept().await else {
-            continue;
-        };
-        let io = TokioIo::new(tcp);
-        tokio::spawn(async move {
+        /*tokio::spawn(async move {
             if let Err(err) = http1::Builder::new()
                 .timer(TokioTimer::new())
                 .serve_connection(io, service_fn(michaeljoy))
@@ -268,7 +263,7 @@ async fn main() {
             {
                 println!("Error serving connection: {err:?}");
             }
-        });
+        });*/
 
         // Load public certificate
         let Ok(certs) = load_certs(CERT_KEY.0) else {
@@ -284,11 +279,6 @@ async fn main() {
 
         // Build TLS configuration
 
-        // Create a TCP listener via tokio
-        let Ok(incoming) = TcpListener::bind(&address).await else {
-            eprintln!("Failed to bind to {address}");
-            continue;
-        };
         let Ok(server_config) = ServerConfig::builder()
             .with_no_client_auth()
             .with_single_cert(certs, key)
@@ -309,6 +299,7 @@ async fn main() {
             continue;
         };
 
+        eprintln!("Listening on {address}");
         loop {
             let Ok((tcp_stream, _remote_address)) = incoming.accept().await else {
                 continue;
