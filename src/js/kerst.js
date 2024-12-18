@@ -111,7 +111,7 @@ const loop = () => {
     } else if (now < nextYear) {
         content += `${millisecondsToHMS(now - nextYear)} tot 2024`;
     } else {
-        content += "Gelukkig 2024!";
+        content += $`Gelukkig ${this_year}!`;
     }
     document.getElementById("countdown").innerHTML = content;
 };
