@@ -55,7 +55,7 @@ const setup = () => {
             username = username[0].toUpperCase() + username.slice(1);
             break;
         case "els": case "tom": case "kelly": case "hanneke": case "ruud": case "jeroen":
-            relatie = "je familie";
+            relatie = "familie";
             username = username[0].toUpperCase() + username.slice(1);
             break;
         case "nathalja": case "catharina": case "mike":
