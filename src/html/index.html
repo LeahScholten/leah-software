@@ -18,7 +18,6 @@
                 <li><h1>Michaeljoy</h1></li>
                 <li><a href="#games">Games</a></li>
                 <li><a href="#tools">Tools</a></li>
-                <li><a href="#projectopnames">Opnames van mijn projecten</a></li>
                 <li><a href="#cv">Mijn CV</a></li>
                 <li><a href="#werk">Ik zoek werk</a></li>
                 <li><a href="#stage">Ik zoek een afstudeerstage</a></li>
@@ -28,93 +27,17 @@
                 Mijn naam is Michael Scholten.
                 Op deze website plaats ik mijn nuttigste projecten, CV en socials.
             </p>
-            <table id="games">
-                <caption>Games</caption>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Linux</td>
-                        <td>Windows</td>
-                        <td>Web</td>
-                    </tr>
-                </thead>
-                <tr>
-                    <td>Pong</td>
-                    <td><a href="/games/pong/linux.zip">Download</a></td>
-                    <td><a href="/games/pong/windows.zip">Download</a></td>
-                    <td><a href="https://play.unity.com/mg/other/pong0-1-l" target="_blank">Speel met unity play</a></td>
-                </tr>
-                <tr>
-                    <td>Conways Game Of Life</td>
-                    <td><a href="/games/conwaysGameOfLife/linux.zip">Download</a></td>
-                    <td><a href="/games/conwaysGameOfLife/windows.zip">Download</a></td>
-                    <td><a href="https://play.unity.com/mg/other/conwaysgameoflife-1" target="_blank">Speel met unity play</a></td>
-                </tr>
-            </table>
-            <table id="tools">
-                <caption>Tools</caption>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Description</td>
-                    </tr>
-                </thead>
-                <tr>
-                    <td><a href="/tools/file_filter.zip">File filter (CLI)</td>
-                    <td>Verwijdert dubbele bestanden in een map</td>
-                </tr>
-                <tr>
-                    <td><a href="/tools/clean_rust_projects.zip">Clean rust projects (CLI)</a></td>
-                    <td>Verwijdert bestanden die gegenereert zijn bij het compileren van Rust projecten.</td>
-                </tr>
-            </table>
-            <h2 id="projectopnames">Opnames van mijn projecten</h2>
-            <h3>Zumo32U4</h3>
-            <p>De ZUMO32U4 is een kleine robotwagen aangestuurd door een ATmega32U4 microcontroller.
-               Dit is de duurste robot die ik momenteel in mijn bezit heb.
-               Deze microcontroller is uitgerust met IR sensoren bedoeld om lijnen te volgen of objecten te detecteren, twee
-               IR leds, vijf normale leds waarvan twee de status van de IR leds aangeven, drie knoppen, een buzzer, twee
-               PWM motoren, een encoder per motor, een accelerometer, een kompas en een gyroscoop.</p>
+            <h2 id="#games">Games</h2>
             <ul>
-                <li><a href="/ZUMO32U4/objectTracing.mp4">object tracing</a></li>
-                <li><a href="/ZUMO32U4/rotatingInPlace.mp4">rotating in place</a></li>
+                <li><a href="https://github.com/41Leahcim/pong/releases/tag/Unity">Pong</a></li>
+                <li><a href="https://github.com/41Leahcim/conwaysGameOfLife_unity/releases/tag/Unity">Conways Game Of Life</a></li>
             </ul>
-            <h3>ATmega328P</h3>
-            <p>De ATmega328P is een microcontroller die je ook veel tegenkomt in de Arduino.
-               Deze microcontroller is door het 5V output voltage vooral handig te gebruiken, voor onderdelen die minimaal
-               5V nodig hebben.
-               Denk hierbij onder andere aan ultrasone afstand sensoren, motoren en sommige speakers en buzzers.
-               Door de hogere prijs is deze microcontroller minder geschikt voor permanente projecten, dan de Raspberry Pico.</p>
+            <h3>Tools</h3>
             <ul>
-                <li><a href="/ATmega328P/hapticWire.mp4">haptic wire</a></li>
-                <li><a href="/ATmega328P/lightDensityMeter.mp4">light meter</a></li>
-                <li><a href="/ATmega328P/quadWalkingLightShow.mp4">quad walking</a></li>
-                <li><a href="/ATmega328P/walkingLight.mp4">walking light</a></li>
-            </ul>
-            <h3>Arduino Uno</h3>
-            <p>De Arduino Uno is een algemeen bekend development board vooral bedoeld voor beginners en hobbyisten.
-               De Arduino Uno maakt gebruik van de ATmega328P, maar heeft ook zijn eigen toegevoegde peripherals.
-               Ook de Arduino is wat duurder en daardoor niet geschikt voor permanente projecten.</p>
-            <ul>
-                <li><a href="/Arduino/automaticLight.mp4">automatic light</a></li>
+                <li><a href="https://github.com/41Leahcim/clean_rust_projects/releases/tag/Stable">File filter (CLI)</a></a></li>
             </ul>
             <h2 id="cv">Mijn cv</h2>
             <iframe src="/cv" style="width: 100%;height: 800px;" title="mijn CV"></iframe>
-
-            <h2 id="werk">Ik zoek een tijdelijke baan.</h2>
-            <p>Ik ben op zoek naar een tijdelijke baan binnen een straal van ongeveer 20 km fietsen of 1 uur reizen met het ov van Leyenburg in Den Haag. Ik kan 22 april 2024 beginnen, maar zal voor 2 september waarschijnlijk moeten stoppen om te beginnen met een afstudeerstage. Deze baan wil ik systems software ontwikkelen. Dit kan een embedded system, operating system of een CLI applicatie zijn.</p>
-            <p>Tijdens mijn studie heb ik veel geprogrammeerd in C en C++, vooral voor ATmega's, Raspberry Pi en ESP32. Met de ATmega heb ik een robot geprogrammeerd om rond te rijden terwijl het objecten vermijdt. Met de Raspberry Pi heb ik leds aangestuurd en een TCP client gemaakt met UNIX C sockets om meerdere IoT devices aan te sturen. Deze IoT devices bevatten een ESP32 die de hardware direct aanstuurde.</p>
-            <p>In mijn derde jaar heb ik een stage gelopen bij het Lectoraat Smart Sensor Systems van de Haagse Hogeschool. Hier heb ik software ontwikkeld en hardware aangepast om metingen te doen met een Adalm Pluto met GPS. Ik heb zelf de GPS-module moeten selecteren en onderzocht hoe deze aan de Adalm Pluto kon worden gekoppeld, aangezien deze geen geschikte pinnen had voor I2C of USART. Uiteindelijk heb ik dit opgelost door een Raspberry Pico te gebruiken, die de data van de GPS ontvangt via UART en deze vertraagd doorstuurt naar de Adalm Pluto.</p>
-            <p>In mijn vrije tijd programmeer ik graag in C, C++ en Rust, voornamelijk voor CLI-applicaties en embedded software. Ook ben ik een fanatiek lezer van artikelen, luister ik graag naar podcasts en bekijk ik filmpjes over programmeren. Als ik niets programmeren gerelateerd doe, geniet ik van YouTube-filmpjes, speel ik graag games of maak ik een fietstocht.</p>
-            <p>Ik ben enthousiast, gedreven en klaar voor een boeiende en leerzame baan waar ik mijn opgedane kennis in de praktijk kan brengen en nieuwe uitdagingen kan aangaan. Bent u of kent u een organisatie die een gemotiveerde medewerker zoekt? Dan kom ik graag met u in contact!</p>
-
-            <h2 id="stage">Ik zoek een afstudeerstage</h2>
-            <p>Ik ben op zoek naar een afstudeerstage binnen een straal van ongeveer 20 km fietsen of 1 uur reizen met het ov van Leyenburg in Den Haag. De stage zal beginnen op 2 september 2024 en eind januari of begin februari eindigen voor een totale duur van 20 weken. Tijdens deze afstudeerstage wil ik systems software ontwikkelen. Dit kan een embedded system, operating system of een CLI applicatie zijn.</p>
-            <p>Tijdens mijn studie heb ik veel geprogrammeerd in C en C++, vooral voor ATmega's, Raspberry Pi en ESP32. Met de ATmega heb ik een robot geprogrammeerd om rond te rijden terwijl het objecten vermijdt. Met de Raspberry Pi heb ik leds aangestuurd en een TCP client gemaakt met UNIX C sockets om meerdere IoT devices aan te sturen. Deze IoT devices bevatten een ESP32 die de hardware direct aanstuurde.</p>
-            <p>In mijn derde jaar heb ik stage gelopen bij het Lectoraat Smart Sensor Systems van de Haagse Hogeschool. Hier heb ik software ontwikkeld en hardware aangepast om metingen te doen met een Adalm Pluto met GPS. Ik heb zelf de GPS-module moeten selecteren en onderzocht hoe deze aan de Adalm Pluto kon worden gekoppeld, aangezien deze geen geschikte pinnen had voor I2C of USART. Uiteindelijk heb ik dit opgelost door een Raspberry Pico te gebruiken, die de data van de GPS ontvangt via UART en deze vertraagd doorstuurt naar de Adalm Pluto.</p>
-            <p>In mijn vrije tijd programmeer ik graag in C, C++ en Rust, voornamelijk voor CLI-applicaties en embedded software. Ook ben ik een fanatiek lezer van artikelen, luister ik graag naar podcasts en bekijk ik filmpjes over programmeren. Als ik niets programmeren gerelateerd doe, kijk ik YouTube-filmpjes, speel ik graag games of maak ik een fietstocht.</p>
-            <p>Ik ben enthousiast, gedreven en klaar voor een boeiende en leerzame afstudeeropdracht waar ik mijn opgedane kennis in de praktijk kan brengen en nieuwe uitdagingen kan aangaan. Bent u of kent u een organisatie die een gemotiveerde stagiair zoekt? Dan kom ik graag met u in contact!</p>
-
             <h2 id="socials">Social media</h2>
             <ul>
                 <li><a href="https://www.linkedin.com/in/michael-scholten2000/">LinkedIn</a></li>
