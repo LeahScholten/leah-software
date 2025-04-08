@@ -10,7 +10,6 @@
     unsafe_code
 )]
 #![warn(clippy::pedantic, clippy::nursery)]
-#![feature(async_closure)]
 
 use std::io;
 use std::net::SocketAddr;
@@ -220,23 +219,6 @@ where
     Ok(response)
 }
 
-/*async fn wait_for_cert_update() {
-    let start = SystemTime::now();
-    let second = Duration::from_secs(1);
-    loop {
-        tokio::time::sleep(second).await;
-        let Ok(file) = tokio_fs::File::open(CERT_KEY.0).await else {
-            continue;
-        };
-        let Ok(metadata) = file.metadata().await else {
-            continue;
-        };
-        if metadata.modified().is_ok_and(|update| update > start) {
-            break;
-        }
-    }
-}*/
-
 async fn last_modification_time() -> Option<SystemTime> {
     tokio_fs::File::open(CERT_KEY.0)
         .await
@@ -255,16 +237,6 @@ async fn main() {
     #[allow(clippy::unwrap_used)]
     let incoming = TcpListener::bind(address).await.unwrap();
     loop {
-        /*tokio::spawn(async move {
-            if let Err(err) = http1::Builder::new()
-                .timer(TokioTimer::new())
-                .serve_connection(io, service_fn(michaeljoy))
-                .await
-            {
-                println!("Error serving connection: {err:?}");
-            }
-        });*/
-
         // Load public certificate
         let Ok(certs) = load_certs(CERT_KEY.0) else {
             eprintln!("Failed to load certificates");
