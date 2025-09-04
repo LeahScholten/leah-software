@@ -3,8 +3,6 @@
     clippy::panic_in_result_fn,
     clippy::panicking_unwrap,
     clippy::unwrap_in_result,
-    clippy::unwrap_in_result,
-    clippy::unwrap_used,
     non_fmt_panics,
     unconditional_panic,
     unsafe_code
@@ -233,7 +231,7 @@ async fn last_modification_time() -> Option<SystemTime> {
 #[tokio::main]
 async fn main() {
     let port = 4430;
-    let address: SocketAddr = (Ipv4Addr::new(0, 0, 0, 0), port).into();
+    let address: SocketAddr = (Ipv4Addr::UNSPECIFIED, port).into();
     #[allow(clippy::unwrap_used)]
     let incoming = TcpListener::bind(address).await.unwrap();
     loop {
