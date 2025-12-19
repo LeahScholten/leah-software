@@ -14,61 +14,56 @@ const secondChristmasDay = new Date(this_year, 11, 26, 0, 0, 0, 0);
 const nextYear = new Date(this_year + 1, 0, 1, 0, 0, 0, 0);
 
 const setup = () => {
-    let relatie;
-
     if (username.length == 0) {
         document.body.innerHTML = "";
         return false;
     }
 
-    switch (username.toLowerCase()) {
+    const USERNAME_LOWERCASE = username.toLowerCase();
+    let relatie;
+    let convert_to_lower_case = false;
+    switch (USERNAME_LOWERCASE) {
         case "opa": case "oma":
-            relatie = `mijn ${username}`;
-            username[0] = username[0].toLowerCase();
+            relatie = `mijn ${USERNAME_LOWERCASE}`;
             document.getElementById("ending").innerText = "Knuffels,";
+            convert_to_lower_case = true;
             break;
-        case "mama":
-            relatie = `mijn moeder`;
-            username[0] = username[0].toLowerCase();
         case "daisy":
             relatie = "mijn zus";
-            username = username[0].toUpperCase() + username.slice(1);
-            break;
-        case "stephen":
-            relatie = "mijn Stephen vader";
-            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "chris":
             relatie = "mijn neef";
-            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "iris":
             relatie = "mijn nicht";
-            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "arjen":
             relatie = "mijn oom";
-            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "nicole":
             relatie = "mijn tante";
-            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "els": case "tom": case "kelly": case "hanneke": case "ruud": case "jeroen":
             relatie = "familie";
-            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "nathalja": case "catharina": case "mike":
             relatie = "een van mijn beste vrienden";
-            username = username[0].toUpperCase() + username.slice(1);
             break;
         case "jolinda":
-            relatie = "een moeder van Levy bent";
-            username = username[0].toUpperCase() + username.slice(1);
+            relatie = "zo'n goede moeder voor Levy";
+            break;
+        case "Angelique": case "Esme":
+            relatie = "een vriendin van oma";
             break;
         default:
             document.body.innerHTML = "";
             return false;
+    }
+
+    if (convert_to_lower_case) {
+        username = USERNAME_LOWERCASE;
+    } else {
+        username = username[0].toUpperCase() + username.slice(1);
     }
 
     document.getElementById("greeting").innerText = `Hallo ${username},`;
@@ -98,6 +93,7 @@ const millisecondsToHMS = (milliseconds) => {
 };
 
 const loop = () => {
+    let fast_countdown = false;
     const now = new Date();
     let content = "";
     if (now < firstChristmasDay) {
@@ -110,10 +106,12 @@ const loop = () => {
         content += `Dagen tot nieuwjaar ${millisecondsToDays(nextYear - now)}`;
     } else if (now < nextYear) {
         content += `${millisecondsToHMS(now - nextYear)} tot 2024`;
+        fast_countdown = true;
     } else {
         content += $`Gelukkig ${this_year}!`;
     }
     document.getElementById("countdown").innerHTML = content;
+    return fast_countdown;
 };
 
 async function main() {
@@ -121,7 +119,13 @@ async function main() {
         return;
     }
     while (true) {
-        loop();
-        await new Promise(r => setTimeout(r, 1000 - (new Date).getMilliseconds()));
+        if (loop()) {
+            await new Promise(r => setTimeout(r, 1000 - (new Date).getMilliseconds()));
+        } else {
+            const NOW = (new Date);
+            const DELAY = 24 * 3600 - ((NOW.getHours() * 60 + NOW.getMinutes()) * 60 + NOW.getSeconds());
+            console.log(DELAY);
+            await new Promise(r => setTimeout(r, DELAY * 1000));
+        }
     }
 }
