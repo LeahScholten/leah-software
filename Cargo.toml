@@ -7,7 +7,6 @@ edition = "2021"
 strip = true      # automatically strip symbols from the binary
 opt-level = "s"   # optimize for size
 lto = true        # enable link time optimization
-codegen-units = 1 # maximize size reduction optimizations
 panic = "abort"   # abort instead of unwinding the code on panic
 
 [dependencies]
