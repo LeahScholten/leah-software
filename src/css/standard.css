@@ -3,10 +3,35 @@ body{
     color: rgb(224, 255, 224);
 }
 
+#nav{
+    position: fixed;
+    width: 100%;
+    border: none;
+    background-color: black;
+    top: 0px;
+    left: 0px;
+    height: 50px;
+    z-index: 1;
+}
+
+.nav-column {
+    border: 1px solid;
+    padding: 0px;
+    text-align: center;
+    border-color: #222;
+}
+
 #content{
     display: table;
     margin: auto;
-    max-width: 50%;
+    position: relative;
+    top: 80px;
+}
+
+@media (orientation: landscape) {
+    #content {
+        max-width: 50%;
+    }
 }
 
 a{
