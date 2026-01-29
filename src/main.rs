@@ -14,12 +14,12 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::SystemTime;
 
-use http_body_util::{BodyExt, Full};
+use http_body_util::Full;
 use hyper::{
     body::{Body, Bytes},
     header::{self, HeaderValue},
     service::service_fn,
-    Method, Request, Response, StatusCode,
+    Request, Response, StatusCode,
 };
 use hyper_util::{
     rt::{TokioExecutor, TokioIo},
@@ -29,13 +29,7 @@ use rustls::{
     pki_types::{CertificateDer, PrivateKeyDer},
     ServerConfig,
 };
-use std::{
-    fmt::Write as _,
-    fs,
-    net::Ipv4Addr,
-    num::ParseFloatError,
-    sync::atomic::{AtomicU8, Ordering},
-};
+use std::{fmt::Write as _, fs, net::Ipv4Addr, num::ParseFloatError};
 use tokio::{
     fs as tokio_fs,
     io::{AsyncBufRead, AsyncBufReadExt},
@@ -52,8 +46,8 @@ const CERT_KEY: (&str, &str) = (
 
 #[cfg(not(target_arch = "x86_64"))]
 const CERT_KEY: (&str, &str) = (
-    "/etc/letsencrypt/live/michaeljoy.nl/fullchain.pem",
-    "/etc/letsencrypt/live/michaeljoy.nl/privkey.pem",
+    "/etc/letsencrypt/live/leah-software.nl/fullchain.pem",
+    "/etc/letsencrypt/live/leah-software.nl/privkey.pem",
 );
 
 async fn find_path<T: AsyncBufRead + Unpin + Send>(
@@ -125,7 +119,6 @@ async fn michaeljoy<Req: Body + Send>(
 where
     Req::Data: Send,
 {
-    static MOOD: AtomicU8 = AtomicU8::new(70);
     // Create an empty response
     let mut response = Response::new(Full::new(Bytes::new()));
 
@@ -183,24 +176,6 @@ where
                 HeaderValue::from_str(content_type("temperature.html")).unwrap(),
             );
         }
-
-        None if expected_uri == "/mood" => match *req.method() {
-            Method::GET => {
-                *response.body_mut() = MOOD.load(Ordering::Relaxed).to_string().into();
-            }
-            Method::POST => {
-                let data = req.into_body().collect().await.map(|body| {
-                    String::from_utf8(body.to_bytes().into_iter().collect())
-                        .map(|body| body.trim().parse::<u8>())
-                });
-                if let Ok(Ok(Ok(value))) = data {
-                    if value <= 100 {
-                        MOOD.store(value, Ordering::Relaxed);
-                    }
-                }
-            }
-            _ => {}
-        },
 
         // If the requested page wasn't found
         None => {
