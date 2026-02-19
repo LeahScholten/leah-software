@@ -14,6 +14,10 @@
 /portfolio/circleOfInfluence.png, src/img/circleOfInfluence.png
 /portfolio/5TeamDysfunctions.png, src/img/5TeamDysfunctions.png
 /thermometer.png, src/img/thermometer.png
+/logo/linkedin.jpg, src/img/logos/linkedIn.jpg
+/logo/github.png, src/img/logos/github.png
+/logo/unity.jpg, src/img/logos/unity.jpg
+/logo/youtube.jpg, src/img/logos/youtube.jpg
 
 /raspberryPico/7segmentCounter.mp4, src/video/raspberryPico/7segmentCounter.mp4
 /ZUMO32U4/objectTracing.mp4, src/video/ZUMO32U4/objectTracing.mp4

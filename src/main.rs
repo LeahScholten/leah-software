@@ -102,7 +102,7 @@ fn content_type(file_name: &str) -> &'static str {
         "tml" => "text/html",
         "css" => "text/css",
         "ico" => "image/x-icon",
-        "peg" => "image/jpeg",
+        "peg" | "jpg" => "image/jpeg",
         "png" => "image/png",
         "mp4" => "video/mp4",
         "pdf" => "application/pdf",
