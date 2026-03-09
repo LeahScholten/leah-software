@@ -4,14 +4,12 @@ body{
 }
 
 #nav{
-    position: fixed;
     width: 100%;
     border: none;
     background-color: black;
     top: 0px;
     left: 0px;
     height: 50px;
-    z-index: 1;
 }
 
 .nav-column {
@@ -24,8 +22,6 @@ body{
 #content{
     display: table;
     margin: auto;
-    position: relative;
-    top: 80px;
 }
 
 @media (orientation: landscape) {
@@ -34,6 +30,17 @@ body{
     }
 }
 
-a{
+a {
     color: lightblue;
+}
+
+.game {
+    text-align: center;
+    width: 49%;
+    border: 1px;
+    border-style: groove;
+}
+
+.gameIcon {
+    width: 99%;
 }
