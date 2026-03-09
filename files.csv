@@ -34,10 +34,10 @@
 /kerst_bericht, src/js/kerst.js
 /mood_thermometer, src/js/mood.js
 
-/games/pong/windows.zip, src/games/pong/windows.zip
-/games/pong/linux.zip, src/games/pong/linux.zip
+/games/pong.png, src/img/games/pong.png
 /games/conwaysGameOfLife/windows.zip, src/games/conwaysGameOfLife/windows.zip
 /games/conwaysGameOfLife/linux.zip, src/games/conwaysGameOfLife/linux.zip
+/games/conways_game_of_life.png, src/img/games/conways_game_of_life.png
 /6MFxbXdTfzq6a4mc, src/games/SetupGuideInEditorTutorial.zip
 
 /tools/file_filter.zip, src/tools/file_filter.zip
