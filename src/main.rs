@@ -99,7 +99,7 @@ fn generate_temperature_page() -> String {
 fn content_type(file_name: &str) -> &'static str {
     let file_name = file_name.trim();
     match &file_name[file_name.len() - 3..] {
-        "tml" => "text/html",
+        "tml" => "text/html; charset=utf-8",
         "css" => "text/css",
         "ico" => "image/x-icon",
         "peg" | "jpg" => "image/jpeg",
@@ -108,8 +108,7 @@ fn content_type(file_name: &str) -> &'static str {
         "pdf" => "application/pdf",
         ".js" => "application/javascript",
         "zip" => "application/zip",
-        "txt" => "text/plain",
-        _ => todo!(),
+        _ => "text/plain",
     }
 }
 

@@ -44,3 +44,4 @@
 /tools/clean_rust_projects.zip, src//tools/clean_rust_projects.zip
 
 /robots.txt, src/robots.txt
+/sitemap.xml, src/Sitemap.xml
