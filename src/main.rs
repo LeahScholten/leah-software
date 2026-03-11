@@ -135,7 +135,11 @@ where
 
     // Take the requested path
     let expected_uri = req.uri().path();
-    println!("{now}\n{}\n{expected_uri}\n", req.method());
+    println!(
+        "{}\n{}\n{expected_uri}\n",
+        now.format("%d/%m/%Y %H:%M:%S"),
+        req.method()
+    );
 
     #[allow(clippy::unwrap_used)]
     match find_path(lines, expected_uri).await {

@@ -19,15 +19,6 @@
 /logo/unity.jpg, src/img/logos/unity.jpg
 /logo/youtube.jpg, src/img/logos/youtube.jpg
 
-/raspberryPico/7segmentCounter.mp4, src/video/raspberryPico/7segmentCounter.mp4
-/ZUMO32U4/objectTracing.mp4, src/video/ZUMO32U4/objectTracing.mp4
-/ZUMO32U4/rotatingInPlace.mp4, src/video/ZUMO32U4/rotatingInPlace.mp4
-/ATmega328P/hapticWire.mp4, src/video/ATmega328P/hapticWire.mp4
-/ATmega328P/lightDensityMeter.mp4, src/video/ATmega328P/lightDensityMeter.mp4
-/ATmega328P/quadWalkingLightShow.mp4, src/video/ATmega328P/quadWalkingLightShow.mp4
-/ATmega328P/walkingLight.mp4, src/video/ATmega328P/walkingLight.mp4
-/Arduino/automaticLight.mp4, src/video/Arduino/automaticLight.mp4
-
 /cv.pdf, src/pdf/cv.pdf
 /ID-PD_HBO-I_jobevent+oracle.pdf, src/pdf/ID-PD_HBO-I_jobevent+oracle.pdf
 
