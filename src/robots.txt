@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Allow: /zakelijk.html
-Allow: /technisch.html
+Sitemap: https://leah-software.nl/sitemap.xml
