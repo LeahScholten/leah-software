@@ -44,3 +44,9 @@ a {
 .gameIcon {
     width: 99%;
 }
+
+#social_icons{
+    text-align:center;
+    width: 100%;
+    word-spacing: 1%;
+}

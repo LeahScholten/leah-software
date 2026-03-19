@@ -1,4 +1,5 @@
 /, src/html/index.html
+/en, src/html/index_en.html
 /kerst, src/html/kerst.html
 /cv, src/html/cv.html
 /cv_en, src/html/cv_en.html
