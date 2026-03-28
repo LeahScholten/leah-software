@@ -34,8 +34,7 @@
 /games/conways_game_of_life.png, src/img/games/conways_game_of_life.png
 /6MFxbXdTfzq6a4mc, src/games/SetupGuideInEditorTutorial.zip
 
-/tools/file_filter.zip, src/tools/file_filter.zip
-/tools/clean_rust_projects.zip, src//tools/clean_rust_projects.zip
+/tools/fat_calculator.zip, src/tools/fat_calculator.zip
 
 /robots.txt, src/robots.txt
 /sitemap.xml, src/Sitemap.xml
