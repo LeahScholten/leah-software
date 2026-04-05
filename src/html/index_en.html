@@ -23,16 +23,9 @@
             <p>
                 If you have an idea for an application to develop, you can mail it to <a href="mailto:leah-scholten@pm.me">leah-scholten@pm.me</a> .
             </p>
-            <p>
-                All games and tools have at least a Windows and a Linux version.
-                You can determine whether you are using Windows or Linux, in the following way:
+            <p id="platform">
+                At this moment it's not possible to determine whether you are using Windows or Linux. The web versions should work on your device, though.
             </p>
-            <ol>
-                <li>If you are not using a laptop or desktop computer, you probably aren't using Windows nor Linux.</li>
-                <li>If the device you are using has an apple icon, you are probably using a MAC and not Windows or Linux.</li>
-                <li>If there is a picture of 4 squares at the bottom (usually the bottom left corner) of your screen, you are probably using Windows.</li>
-                <li>Otherwise, you are probably using Linux.</li>
-            </ol>
             <h2 id="#games">Games</h2>
             <table id="gameList">
                 <tr>
@@ -51,13 +44,13 @@
                     <td class="game">
                         <img src="/games/FlyingPterodactyl.png" class="gameIcon" alt="Flying Pterodactyl" title="Flying Pterodactyl game">
                         Flying Pterodactyl
-                        (<a href="/games/FlyingPterodactyl.zip">Windows, Linux</a>, <a href="https://play.unity.com/en/games/d783bb91-151b-44c3-94cd-2e88f6f06079/flappy-pterodactyl" target="_blank">web</a>)
+                        (<a href="/games/FlyingPterodactyl.zip">Windows, Linux</a>, and <a href="https://play.unity.com/en/games/d783bb91-151b-44c3-94cd-2e88f6f06079/flappy-pterodactyl" target="_blank">web</a>)
                     </td>
                 </tr>
             </table>
             <h3 id="tools">Tools</h3>
             <ul>
-                <li><a href="/tools/fat_calculator.zip">Fat Calculator (Windows en linux)</a></li>
+                <li><a href="/tools/fat_calculator.zip">Fat Calculator (Windows and linux)</a></li>
             </ul>
 
             <h2 id="socials">Social media</h2>
@@ -84,5 +77,19 @@
                 <a href="https://maps.app.goo.gl/pzJWDbabEmq6j88G8" target="_blank">Google Maps</a>
             </p>
         </div>
+        <script>
+            let platform = "";
+            if(navigator.userAgent.indexOf("Win") != -1){
+                platform = "Windows";
+            }else if(navigator.userAgent.indexOf("Linux") != -1){
+                platform = "Linux";
+            }
+
+            if(platform.length > 0){
+                document.getElementById("platform").innerText = `It seems like you are using ${platform} and thus can use the ${platform} and web versions.`;
+            }else{
+                document.getElementById("platform").innerText = `It seems like you aren't using Windows nor Linux, but the web versions should still work.`;
+            }
+        </script>
     </body>
 </html>

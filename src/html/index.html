@@ -23,16 +23,9 @@
             <p>
                 Indien u een idee heeft voor een applicatie om te ontwikkelen, kunt u die mailen naar <a href="mailto:leah-scholten@pm.me">leah-scholten@pm.me</a> .
             </p>
-            <p>
-                Alle games en tools hebben op zijn minst een Windows en Linux versie.
-                U kunt bepalen of u Windows of Linux gebruikt op de volgende manier:
+            <p id="platform">
+                Op dit moment kan niet bepaald worden of u Windows of Linux gebruikt, maar de web versies zouden zeker moeten werken.
             </p>
-            <ol>
-                <li>Als je geen laptop of desktop computer gebruikt, gebruik je waarschijnlijk geen Windows of Linux.</li>
-                <li>Als het apparaat een appel icoontje heeft, gebruik je waarschijnlijk een MAC en dus geen Windows of Linux.</li>
-                <li>Als er een plaatje met 4 vierkantjes aan de onderkant (meestal de hoek linksonder) van het scherm is, gebruik je waarschijnlijk Windows.</li>
-                <li>Anders gebruik je waarschijnlijk Linux.</li>
-            </ol>
             <h2 id="#games">Games</h2>
             <table id="gameList">
                 <tr>
@@ -83,5 +76,19 @@
                 <a href="https://maps.app.goo.gl/pzJWDbabEmq6j88G8" target="_blank">Google Maps</a>
             </p>
         </div>
+        <script>
+            let platform = "";
+            if(navigator.userAgent.indexOf("Win") != -1){
+                platform = "Windows";
+            }else if(navigator.userAgent.indexOf("Linux") != -1){
+                platform = "Linux";
+            }
+
+            if(platform.length > 0){
+                document.getElementById("platform").innerText = `Het lijkt er op dat u ${platform} gebruikt en dus de ${platform} en web versies kunt gebruiken.`;
+            }else{
+                document.getElementById("platform").innerText = `Het lijkt er op dat u geen Windows of Linux gebruikt op dit moment en u kunt dus alleen de web versies gebruiken.`;
+            }
+        </script>
     </body>
 </html>
