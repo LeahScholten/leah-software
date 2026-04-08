@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="nl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Bij Leah Software kan iedereen tegen betaling op maat gemaakte software laten ontwikkelen en deels gratis bestaande games en applicaties downloaden.">
+        <title>Fat calculator | Leah Software | Software op bestelling</title>
+        <link href="/standard" rel="stylesheet">
+        <link href="/" rel="canonical">
+    </head>
+    <body oninput="calculate_fat_percentage('nl')" onload="calculate_fat_percentage('nl')">
+        <table id="nav" role="navigation">
+            <tr>
+                <td class="nav-column"><h1><a href="/">Leah Software</a></h1></td>
+                <td class="nav-column"><a href="/#games">Games</a></td>
+                <td class="nav-column"><a href="/#tools">Tools</a></td>
+                <td class="nav-column"><a href="/#socials">Social media</a></td>
+                <td class="nav-column"><a href="/#contact">Contact</a></td>
+                <td class="nav-column"><a href="/fat_calculator_en">English</a></td>
+            </tr>
+        </table>
+        <div id="content" role="main">
+            <p>
+                Als u een trans vrouw bent en nog geen hormoontherapie heeft gehad, selecteert u man als gender.<br>
+                Als u een trans man bent en nog geen hormoontherapie heeft gehad, selecteert u vrouw als gender.<br>
+                Als u non-binair bent, selecteert u uw geslacht of het gender waarvoor u hormoontherapie krijgt.<br>
+                Bereken methode is gebaseerd op: <a href="https://www.dietenlijst.nl/Vetpercentage/" target="_blank">https://www.dietenlijst.nl/Vetpercentage/</a><br>
+                Vet percentage gezondheid is gebaseerd op <a href="https://www.fit.nl/afvallen/vetpercentage" target="_blank">https://www.fit.nl/afvallen/vetpercentage</a><br>
+                Ik ben niet verantwoordelijk voor uw acties naar aanleiding van de resultaten van deze applicatie.
+            </p>
+
+            Lengte (cm):<br>
+            <input type="number" id="height"><br>
+
+            <span id="weight_span">
+                Gewicht (kg):<br>
+                <input type="number" id="weight"><br>
+            </span>
+
+            <span id="waist_span">
+                Middel omtrek (cm):<br>
+                <input type="number" id="waist"><br>
+            </span>
+
+            <span id="neck_span">
+                Nek omtrek (cm):<br>
+                <input type="number" id="neck"><br>
+            </span>
+
+            <span id="gender_span">
+                Gender<br>
+                <input type="radio" name="gender" value="man"><label for="man">Man</label><br>
+                <input type="radio" name="gender" value="woman"><label for="man">Vrouw</label><br>
+            </span>
+            
+            <span style="display:none"  id="hip_span">
+                Heup omtrek (cm):<br>
+                <input type="number" id="hip"><br>
+            </span>
+
+            <p id="output"></p>
+        </div>
+        <script src="/fat_calculator.js"></script>
+    </body>
+</html>

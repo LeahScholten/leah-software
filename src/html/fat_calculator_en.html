@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Bij Leah Software kan iedereen tegen betaling op maat gemaakte software laten ontwikkelen en deels gratis bestaande games en applicaties downloaden.">
+        <title>Fat calculator | Leah Software | Software op bestelling</title>
+        <link href="/standard" rel="stylesheet">
+        <link href="/" rel="canonical">
+    </head>
+    <body oninput="calculate_fat_percentage('en')" onload="calculate_fat_percentage('en')">
+        <table id="nav" role="navigation">
+            <tr>
+                <td class="nav-column"><h1><a href="/en">Leah Software</a></h1></td>
+                <td class="nav-column"><a href="/en#games">Games</a></td>
+                <td class="nav-column"><a href="/en#tools">Tools</a></td>
+                <td class="nav-column"><a href="/en#socials">Social media</a></td>
+                <td class="nav-column"><a href="/en#contact">Contact</a></td>
+                <td class="nav-column"><a href="/fat_calculator">Nederlands</a></td>
+            </tr>
+        </table>
+        <div id="content" role="main">
+            <p>
+                If you are a trans woman who hasn't been on hrt yet, select man as your gender.<br>
+                If you are a trans man who hasn't been on hrt yet, select woman as your gender.<br>
+                If you are non-binary, select your sex or the gender you get hrt for, as your gender.<br>
+                Calculation method is based on: <a href="https://www.dietenlijst.nl/Vetpercentage/" target="_blank">https://www.dietenlijst.nl/Vetpercentage/</a><br>
+                Fat percentage health is based on <a href="https://www.fit.nl/afvallen/vetpercentage" target="_blank">https://www.fit.nl/afvallen/vetpercentage</a><br>
+                I am not responsible for your actions based on the results of this application.
+            </p>
+
+            Height (cm):<br>
+            <input type="number" id="height"><br>
+
+            <span id="weight_span">
+                Weight (kg):<br>
+                <input type="number" id="weight"><br>
+            </span>
+
+            <span id="waist_span">
+                Waist circumference (cm):<br>
+                <input type="number" id="waist"><br>
+            </span>
+
+            <span id="neck_span">
+                Neck circumference (cm):<br>
+                <input type="number" id="neck"><br>
+            </span>
+
+            <span id="gender_span">
+                Gender<br>
+                <input type="radio" name="gender" value="man"><label for="man">Man</label><br>
+                <input type="radio" name="gender" value="woman"><label for="man">Woman</label><br>
+            </span>
+            
+            <span style="display:none" id="hip_span">
+                Hip circumference (cm):<br>
+                <input type="number" id="hip"><br>
+            </span>
+
+            <p id="output"></p>
+        </div>
+        <script src="/fat_calculator.js"></script>
+    </body>
+</html>
