@@ -29,6 +29,7 @@
 /kerst_bericht, src/js/kerst.js
 /mood_thermometer, src/js/mood.js
 /fat_calculator.js, src/js/fat_calculator.js
+/index.js, src/js/index.js
 
 /games/pong.png, src/img/games/pong.png
 /games/conwaysGameOfLife/windows.zip, src/games/conwaysGameOfLife/windows.zip

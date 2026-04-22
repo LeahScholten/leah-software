@@ -7,8 +7,9 @@
         <title>Leah Software | Software by order</title>
         <link href="/standard" rel="stylesheet">
         <link href="/" rel="canonical">
+        <script src="index.js"></script>
     </head>
-    <body>
+    <body onload="display_platform('en')">
         <table id="nav" role="navigation">
             <tr>
                 <td class="nav-column"><h1>Leah Software</h1></td>
@@ -89,19 +90,5 @@
                 <a href="https://maps.app.goo.gl/pzJWDbabEmq6j88G8" target="_blank">Google Maps</a>
             </p>
         </div>
-        <script>
-            let platform = "";
-            if(navigator.userAgent.indexOf("Win") != -1){
-                platform = "Windows";
-            }else if(navigator.userAgent.indexOf("Linux") != -1){
-                platform = "Linux";
-            }
-
-            if(platform.length > 0){
-                document.getElementById("platform").innerText = `It seems like you are using ${platform} and thus can use the ${platform} and web versions.`;
-            }else{
-                document.getElementById("platform").innerText = `It seems like you aren't using Windows nor Linux, but the web versions should still work.`;
-            }
-        </script>
     </body>
 </html>

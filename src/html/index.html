@@ -7,8 +7,9 @@
         <title>Leah Software | Software op bestelling</title>
         <link href="/standard" rel="stylesheet">
         <link href="/" rel="canonical">
+        <script src="index.js"></script>
     </head>
-    <body>
+    <body onload="lang='nl';display_platform()">
         <table id="nav" role="navigation">
             <tr>
                 <td class="nav-column"><h1>Leah Software</h1></td>
@@ -36,31 +37,31 @@
                 <tr>
                     <td class="game">
                         <img src="/games/pong.png" class="gameIcon" alt="pong" title="Pong game"><br>
-                        <a href="https://github.com/MichaelaScholten/pong/releases/tag/Unity" target="_blank">Pong (Windows en Linux)</a>
+                        <a href="https://github.com/MichaelaScholten/pong/releases/tag/Unity" target="_blank" onclick="PayAlert()">Pong (Windows en Linux)</a>
                     </td>
                     <td class="game">
                         <img src="/games/conways_game_of_life.png" class="gameIcon" alt="game of life" title="Conways game of life"><br>
                         Conways Game of life
-                        (<a href="/games/conwaysGameOfLife/windows.zip">Windows</a>,
-                        <a href="/games/conwaysGameOfLife/linux.zip">Linux</a>)
+                        (<a href="/games/conwaysGameOfLife/windows.zip" onclick="PayAlert()">Windows</a>,
+                        <a href="/games/conwaysGameOfLife/linux.zip" onclick="PayAlert()">Linux</a>)
                     </td>
                 </tr>
                 <tr>
                     <td class="game">
                         <img src="/games/FlyingPterodactyl.png" class="gameIcon" alt="Flying Pterodactyl" title="Flying Pterodactyl game">
                         Flying Pterodactyl
-                        (<a href="/games/FlyingPterodactyl.zip">Windows, Linux</a> en <a href="https://play.unity.com/en/games/d783bb91-151b-44c3-94cd-2e88f6f06079/flappy-pterodactyl" target="_blank">web</a>)
+                        (<a href="/games/FlyingPterodactyl.zip" onclick="PayAlert()">Windows, Linux</a> en <a href="https://play.unity.com/en/games/d783bb91-151b-44c3-94cd-2e88f6f06079/flappy-pterodactyl" target="_blank" onclick="PayAlert()">web</a>)
                     </td>
                     <td class="game">
                         <img src="/games/elementalIdleTowerDefence.png" class="gameIcon" alt="Elemental Idle Tower Defence" title="Elemental Idle Tower Defence game">
                         Elemental Idle Tower Defence Game
-                        (<a href="/games/ElementalIdleTowerDefence.zip">Windows, Linux</a> en <a href="https://play.unity.com/en/games/84a7f606-43c2-4dce-b9f2-a81c7da259cc/elemental-idle-tower-defence" target="_blank">web</a>)
+                        (<a href="/games/ElementalIdleTowerDefence.zip" onclick="PayAlert()">Windows, Linux</a> en <a href="https://play.unity.com/en/games/84a7f606-43c2-4dce-b9f2-a81c7da259cc/elemental-idle-tower-defence" target="_blank" onclick="PayAlert()">web</a>)
                     </td>
                 </tr>
             </table>
             <h3 id="tools">Tools</h3>
             <ul>
-                <li>Fat Calculator (<a href="/tools/fat_calculator.zip">Windows, linux</a> en <a href="/fat_calculator">web</a>)</li>
+                <li>Fat Calculator (<a href="/tools/fat_calculator.zip" onclick="PayAlert()">Windows, linux</a> en <a href="/fat_calculator" onclick="PayAlert()">web</a>)</li>
             </ul>
 
             <h2 id="socials">Social media</h2>
@@ -86,19 +87,5 @@
                 <a href="https://maps.app.goo.gl/pzJWDbabEmq6j88G8" target="_blank">Google Maps</a>
             </p>
         </div>
-        <script>
-            let platform = "";
-            if(navigator.userAgent.indexOf("Win") != -1){
-                platform = "Windows";
-            }else if(navigator.userAgent.indexOf("Linux") != -1){
-                platform = "Linux";
-            }
-
-            if(platform.length > 0){
-                document.getElementById("platform").innerText = `Het lijkt er op dat u ${platform} gebruikt en dus de ${platform} en web versies kunt gebruiken.`;
-            }else{
-                document.getElementById("platform").innerText = `Het lijkt er op dat u geen Windows of Linux gebruikt op dit moment en u kunt dus alleen de web versies gebruiken.`;
-            }
-        </script>
     </body>
 </html>
