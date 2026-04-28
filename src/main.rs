@@ -109,6 +109,7 @@ fn content_type(file_name: &str) -> &'static str {
         ".js" => "application/javascript",
         "zip" => "application/zip",
         "ebp" => "image/webp",
+        "svg" => "image/svg+xml",
         _ => "text/plain",
     }
 }

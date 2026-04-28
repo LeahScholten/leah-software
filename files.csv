@@ -14,7 +14,6 @@
 /standard, src/css/standard.css
 
 /favicon.ico, src/img/favicon.ico
-/cv_foto.jpeg, src/img/cv_foto.jpeg
 /portfolio/circleOfInfluence.png, src/img/circleOfInfluence.png
 /portfolio/5TeamDysfunctions.png, src/img/5TeamDysfunctions.png
 /thermometer.png, src/img/thermometer.png
@@ -24,6 +23,29 @@
 /logo/youtube.jpg, src/img/logos/youtube.jpg
 /logo/patreon.webp, src/img/logos/patreon.webp
 /logo/petjeaf.png, src/img/logos/petjeaf.png
+
+/cv/calendar.jpg, src/img/cv/calendar.jpg
+/cv/email.jpg, src/img/cv/email.jpg
+/cv/foto.jpg, src/img/cv/foto.jpg
+/cv/home.png, src/img/cv/home.png
+/cv/location.svg, src/img/cv/location.svg
+/cv/name.jpg, src/img/cv/name.jpg
+/cv/phone.png, src/img/cv/phone.png
+
+/cv/skills/arduino.jpg, src/img/cv/skills/arduino.jpg
+/cv/skills/c.png, src/img/cv/skills/c.png
+/cv/skills/cisco.jpg, src/img/cv/skills/cisco.jpg
+/cv/skills/cpp.png, src/img/cv/skills/cpp.png
+/cv/skills/csharp.png, src/img/cv/skills/csharp.png
+/cv/skills/git.png, src/img/cv/skills/git.png
+/cv/skills/java.png, src/img/cv/skills/java.png
+/cv/skills/javascript.png, src/img/cv/skills/javascript.png
+/cv/skills/linux.jpg, src/img/cv/skills/linux.jpg
+/cv/skills/python.png, src/img/cv/skills/python.png
+/cv/skills/rust.png, src/img/cv/skills/rust.png
+/cv/skills/tiaPortal.jpg, src/img/cv/skills/tiaPortal.jpg
+/cv/skills/vscode.png, src/img/cv/skills/vscode.png
+/cv/skills/windows.jpg, src/img/cv/skills/windows.jpg
 
 /cv.pdf, src/pdf/cv.pdf
 /ID-PD_HBO-I_jobevent+oracle.pdf, src/pdf/ID-PD_HBO-I_jobevent+oracle.pdf
