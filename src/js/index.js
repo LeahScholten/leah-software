@@ -20,11 +20,3 @@ function display_platform(){
         document.getElementById("platform").innerText = `It seems like you aren't using Windows nor Linux, but the web versions should still work.`;
     }
 }
-
-function PayAlert(){
-    if(lang == "nl"){
-        alert("Vergeet niet om te doneren via petjeaf.nl");
-    }else{
-        alert("Don't forget to make a donation via petjeaf.nl");
-    }
-}
